@@ -6,6 +6,22 @@ the files here, checking every hash; git ignores everything but this README and 
 manifest. Without the files the package still works and its tests pass: the generator
 check and the tests that read them skip.
 
+Set `MIMEGUESS_DATA_DIR` to download and test against a directory outside the checkout.
+The manifest always stays here. The original embedded table retrieval date remains
+2026-10-12; the manifest records the latest verification fetch separately.
+
+## Specifications and reference packages
+
+- `rfc9110.txt`: HTTP token ABNF, parsed by `tests/test_upstream.py`.
+- `mimesniff.html`: WHATWG signature tables, parsed for supported binary signatures.
+- `mime-types-3.0.2.tgz` and `mime-db-1.54.0.tgz`: pinned npm package archives.
+  `scripts/reference_mime_types.py` verifies their hashes, extracts them under the
+  data directory and runs Node.js to compare every extension and conflict result.
+  No package installation or network access occurs during tests.
+
+These files are neither committed nor included in either distribution. Moving sources
+may change; a download that does not match its pinned hash is refused for review.
+
 ## mime-db-1.54.0.json
 
 - What: `db.json` from jshttp mime-db 1.54.0 (published 2025-03-18). It merges

@@ -29,6 +29,9 @@ All notable changes to this project are documented here. The format follows
   serialization. Existing private import locations for result classes remain usable.
 - The incidental `annotations` attribute is removed from the package namespace;
   `__all__` now describes exactly the public names.
+- Compound lookups only construct suffixes whose lengths occur in the table, avoiding
+  quadratic allocation for very long custom extensions. Override merging uses set
+  membership so repeated large extension lists also remain linear.
 - Runnable API docstrings, external-source checks, seeded properties, packaging and
   error contracts added. Source downloads can be redirected with `MIMEGUESS_DATA_DIR`.
 

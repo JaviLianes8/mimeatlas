@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import gzip
 import hashlib
+import importlib.resources
 import json
 import sys
 from pathlib import Path
@@ -49,12 +50,14 @@ def _pure_build() -> dict[str, Any]:
 @needs_snapshot
 def test_the_embedded_table_equals_the_generator_output() -> None:
     data, meta = generate_table.generate()
-    embedded = gzip.decompress((ROOT / "src" / "mimeguess" / "_data.json.gz").read_bytes())
+    package = importlib.resources.files("mimeguess")
+    embedded = gzip.decompress(package.joinpath("_data.json.gz").read_bytes())
     assert embedded == data
-    assert (ROOT / "src" / "mimeguess" / "_meta.py").read_text(encoding="utf-8") == meta
+    assert package.joinpath("_meta.py").read_text(encoding="utf-8") == meta
 
 
 @needs_snapshot
+@pytest.mark.skipif(not (ROOT / "src").is_dir(), reason="generator command needs a source checkout")
 def test_the_generator_check_mode_passes() -> None:
     assert generate_table.main(["--check"]) == 0
 

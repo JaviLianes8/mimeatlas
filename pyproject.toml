@@ -33,7 +33,7 @@ dependencies = []
 mimeguess = "mimeguess._cli:main"
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy", "pytest", "pytest-timeout", "build", "twine"]
+dev = ["ruff", "mypy", "pytest", "pytest-timeout", "build", "twine", "tomli; python_version < '3.11'"]
 
 [project.urls]
 Homepage = "https://lianes8studio.com"

@@ -97,7 +97,8 @@ def test_usage_errors_exit_one_on_stderr(
 
 def test_unprintable_names_do_not_crash_a_narrow_console() -> None:
     src = str(Path(__file__).resolve().parents[1] / "src")
-    env = {**os.environ, "PYTHONIOENCODING": "ascii", "PYTHONPATH": src}
+    search_path = "" if os.environ.get("MIMEGUESS_INSTALLED") else src
+    env = {**os.environ, "PYTHONIOENCODING": "ascii", "PYTHONPATH": search_path}
     command = [sys.executable, "-m", "mimeguess", "type", "a.png", "\u0436.png"]
     result = subprocess.run(command, capture_output=True, env=env, check=False, timeout=60)
     assert result.returncode == 0, result.stderr

@@ -2,8 +2,8 @@
 
 Progress for 1.0.0:
 - [x] API, docs, errors, source checks and seeded contracts
-- [ ] Packaging and interpreter matrix
-- [ ] Mutation round and final gates
+- [x] Packaging and available interpreter
+- [x] Mutation round and final gates
 - [ ] Independent review, five QA lenses, merge and publication
 
 The detailed evidence and current status are in

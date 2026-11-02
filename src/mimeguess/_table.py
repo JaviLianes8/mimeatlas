@@ -7,7 +7,7 @@ from types import MappingProxyType
 
 from ._mediatype import lenient_essence
 from ._models import Guess
-from ._paths import candidates, expand_alias, normalize_extension, segments, split_encoding
+from ._paths import expand_alias, normalize_extension, segments, split_encoding
 from ._table_info import Entry, _TableInfo
 
 
@@ -26,12 +26,12 @@ class MimeTable(_TableInfo):
     True
     """
 
-    __slots__ = ("_extensions", "_max_dots", "_types")
+    __slots__ = ("_extensions", "_lengths", "_types")
 
     def __init__(self, types: Mapping[str, Entry], extensions: Mapping[str, str]) -> None:
         self._types = MappingProxyType(dict(types))
         self._extensions = MappingProxyType(dict(extensions))
-        self._max_dots = max((ext.count(".") for ext in self._extensions), default=0)
+        self._lengths = tuple(sorted({len(ext) for ext in self._extensions}, reverse=True))
 
     def with_types(self, mapping: Mapping[str, Iterable[str]]) -> MimeTable:
         """Return a new table where the given extensions map to the given types.
@@ -64,7 +64,8 @@ class MimeTable(_TableInfo):
             if not new:
                 raise ValueError("no extensions given")
             old = types.get(key, Entry("custom", None, None, ()))
-            merged = (*new, *(ext for ext in old.extensions if ext not in new))
+            new_set = set(new)
+            merged = (*new, *(ext for ext in old.extensions if ext not in new_set))
             types[key] = old._replace(extensions=merged)
             for ext in new:
                 extensions[ext] = key
@@ -87,7 +88,14 @@ class MimeTable(_TableInfo):
         return self._extensions.get(key)
 
     def _lookup(self, parts: list[str]) -> tuple[str, str] | tuple[None, None]:
-        for ext in candidates(parts, self._max_dots):
+        name = ".".join(parts)
+        # Candidate work is bounded by the stored extension lengths, even when
+        # a custom extension contains thousands of dots.
+        for length in self._lengths:
+            start = len(name) - length
+            if start < 0 or (start and name[start - 1] != "."):
+                continue
+            ext = name[start:]
             mime = self._extensions.get(ext)
             if mime is not None:
                 return mime, ext

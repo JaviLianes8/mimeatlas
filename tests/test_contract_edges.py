@@ -61,6 +61,25 @@ def test_empty_segments_stop_compound_matching() -> None:
     assert m.guess("x.tar.gz.gz") == m.Guess("application/gzip", "gzip", "gz")
 
 
+def test_suffix_matching_requires_a_dot_boundary() -> None:
+    assert m.guess_type("file.notpdf") is None
+    table = m.default_table().with_types({"text/x-demo": ["d.ts"]})
+    assert table.guess_type("file.notd.ts") == "video/mp2t"
+
+
+def test_non_string_paths_raise_type_error() -> None:
+    for function in (m.guess, m.guess_type, m.content_type_for):
+        with pytest.raises(TypeError, match="path must be a string"):
+            function(None)  # type: ignore[arg-type]
+
+
+def test_released_memoryviews_raise_value_error() -> None:
+    view = memoryview(b"%PDF-")
+    view.release()
+    with pytest.raises(ValueError):
+        m.sniff(view)
+
+
 def test_errors_do_not_echo_input() -> None:
     secret = "credential-12345" * 10000
     calls: list[Callable[[], object]] = [

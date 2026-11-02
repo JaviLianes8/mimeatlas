@@ -53,12 +53,6 @@ def segments(path: str) -> list[str]:
     return tail[::-1]
 
 
-def candidates(parts: list[str], max_dots: int) -> list[str]:
-    """Return dotted suffixes from longest to shortest, capped by ``max_dots``."""
-    start = max(0, len(parts) - max_dots - 1)
-    return [".".join(parts[i:]) for i in range(start, len(parts))]
-
-
 def expand_alias(parts: list[str]) -> list[str]:
     """Replace a trailing short form such as ``tgz`` with ``tar``, ``gz``."""
     if parts and parts[-1] in SUFFIX_ALIASES:
