@@ -11,7 +11,8 @@ Progress:
 - [x] Mutation round and final four gates
 - [ ] Independent reviewer (item 16)
 - [ ] Five QA lenses (item 19)
-- [ ] Pull request; merge and publication reserved for the maintainer
+- [x] [PR #4](https://github.com/JaviLianes8/mimeguess/pull/4) open; guard CLEAN
+- [ ] Merge and publication reserved for the maintainer
 
 ## Baseline
 
@@ -150,6 +151,8 @@ while allocating the entire large view.
 ## Scorecard and final gates
 
 Verification completed across 2026-11-02 and 2026-11-03; the release date is 2026-11-02.
+The verified library and tests are committed at `a64a029`; subsequent report updates
+do not change the verified code or distribution contents.
 
 | Item | Result | Evidence |
 | --- | --- | --- |
@@ -169,7 +172,7 @@ Verification completed across 2026-11-02 and 2026-11-03; the release date is 202
 | 14 | PASS | Wheel and sdist inspected and tested |
 | 15 | PASS | Each gate exited 0 independently |
 | 16 | Pending | Independent reviewer |
-| 17 | Pending | PR, merge and publication |
+| 17 | Ready for review | PR #4 open, guard CLEAN; merge and publication pending |
 | 18 | PASS | 25 of 25 mutations caught |
 | 19 | Pending | Five independent QA lenses |
 
@@ -180,4 +183,4 @@ The broader `mypy --strict src tests scripts` also exited 0.
 ## Independent stages
 
 Items 16 and 19 are pending. No reviewer or QA lens verdict is claimed here.
-Item 17 will remain pending for merge and publication after the pull request is prepared.
+Item 17 remains pending for merge and publication.
