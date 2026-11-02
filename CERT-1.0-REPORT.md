@@ -30,7 +30,7 @@ obtained from `default_table` or `with_types`; its constructor is internal.
 
 Validation messages omit input values. CLI errors identify an input by position,
 and usage errors report a generic reason. Non-string paths raise `TypeError`.
-The sniffer reads raw bytes from contiguous views; noncontiguous views must have
+The sniffer reads raw bytes from C-contiguous views; other supported views have
 one-byte elements and one dimension. The CHANGELOG lists each behavior change.
 
 ## Real ground truth
@@ -72,7 +72,7 @@ An external consumer imported the public API, checked values and serialization,
 and passed `mypy --strict` using the installed wheel's `py.typed` information.
 `pip check` and `twine check --strict` passed.
 
-Final results on CPython 3.14.6 (the only installed interpreter discovered):
+Pre-QA results on CPython 3.14.6 (the only installed interpreter discovered):
 
 | Run | Result |
 | --- | --- |
@@ -148,11 +148,10 @@ while allocating the entire large view.
 | M24 | drop an export (`__init__.py`) | `tests/test_contract.py::test_all_lists_exactly_the_public_api` |
 | M25 | ignore suffix dot boundary (`_table.py`) | `tests/test_cli.py::test_unknown_inputs_go_to_stderr_with_exit_one` |
 
-## Scorecard and final gates
+## Pre-QA scorecard and gates
 
 Verification completed across 2026-11-02 and 2026-11-03; the release date is 2026-11-02.
-The verified library and tests are committed at `a64a029`; subsequent report updates
-do not change the verified code or distribution contents.
+The pre-QA library and tests are committed at `a64a029`; QA fixes are recorded below.
 
 | Item | Result | Evidence |
 | --- | --- | --- |
@@ -176,11 +175,25 @@ do not change the verified code or distribution contents.
 | 18 | PASS | 25 of 25 mutations caught |
 | 19 | Pending | Five independent QA lenses |
 
-The final four gates were `ruff format --check .`, `ruff check .`,
-`mypy --strict src`, and `pytest` (225 passed, optional checks enabled).
-The broader `mypy --strict src tests scripts` also exited 0.
+Pre-QA format, lint, strict typing and pytest gates passed (225 tests; optional checks enabled).
 
-## Independent stages
+## QA round 1: 2026-11-03
 
-Items 16 and 19 are pending. No reviewer or QA lens verdict is claimed here.
-Item 17 remains pending for merge and publication.
+Base: `5fb1fd6`. Fix commit: `a0e4e533dce7d946851e6eed38e4d4d724020abb`.
+
+| Findings | Resolution |
+| --- | --- |
+| A-001, A-003 | Document per-function fallbacks and separately fetched snapshot provenance. |
+| A-002 | Unknown `info` errors identify `input 1`; subprocess contract added. |
+| A-004, C-02 | Empty C-contiguous multidimensional views return `None`; released views still raise. |
+| A-005 | Specify C-contiguous support throughout; Fortran-only rejection and its error are tested. |
+| C-01 | Accumulate normalized updates once, preserving ordering, metadata and conflict precedence. |
+| C-03 | Read binary subclasses through buffers and strings through base operations; bound allocations and errors. |
+| E-01 | Hidden filenames behind backslashes tested for all three path APIs; M02 now fails. |
+| E-02 | Every API and CLI provenance field pinned, including ISO retrieval date; M36 now fails. |
+| E-03 | Plain CLI and JSON distinguish `True`, `False`, `None`; M47 now fails. |
+
+New contracts: 12 failures before fixes, 20 passes afterward; all three surviving mutations caught.
+All four gates exit 0: format, lint, `mypy --strict src`, pytest (245 passed, no skips).
+Broader strict typing, fresh wheel/sdist builds, artifact checks and strict twine checks pass.
+No findings disputed. Items 16 and 19 await review; item 17 awaits merge and publication.
