@@ -197,3 +197,29 @@ New contracts: 12 failures before fixes, 20 passes afterward; all three survivin
 All four gates exit 0: format, lint, `mypy --strict src`, pytest (245 passed, no skips).
 Broader strict typing, fresh wheel/sdist builds, artifact checks and strict twine checks pass.
 No findings disputed. Items 16 and 19 await review; item 17 awaits merge and publication.
+
+## QA round 2: 2026-11-03
+
+Base: `e2e025fecc698f42d4a3987e5a870d3e299e3412`.
+Fix commit: `b5e13aca06dfdc5fc9e17f20e83b188ab1b31ca6`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-04 | Four public `sniff()` contracts cover bytes and bytearray subclasses whose indexing overrides substitute a different prefix or raise. Each asserts PDF recognition and zero override calls. |
+
+This finding concerns missing coverage; the existing implementation already reads the
+underlying buffer correctly. Production code, public API and runtime behavior are unchanged.
+The CHANGELOG records the added contracts, and the existing memory-bound contracts remain.
+
+The reported mutation, replacing `memoryview(data)` with
+`memoryview(data[:SNIFF_BYTES])`, was applied to a scratch source copy. All four new
+cases failed (two wrong-result assertions and two override exceptions); all four
+passed against the unchanged source. The scratch mutation was then restored.
+The catching test is
+`tests/test_input_contracts.py::test_sniff_reads_binary_subclass_buffers_without_getitem`.
+
+All four gates exit 0: `ruff format --check .`, `ruff check .`, `mypy --strict src`
+and pytest (249 passed, no skips, 300-second per-test timeout). Broader
+`mypy --strict src tests` also passes. Fresh wheel/sdist builds, distribution contents,
+installed-wheel consumers and all optional upstream-source checks pass on CPython 3.14.6.
+No findings disputed. Independent lens re-verification remains pending.
