@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import OrderedDict
 from collections.abc import Iterable, Mapping
 from types import MappingProxyType
 
@@ -54,21 +55,29 @@ class MimeTable(_TableInfo):
         """
         types = dict(self._types)
         extensions = dict(self._extensions)
+        updates: dict[str, OrderedDict[str, None]] = {}
         for mime, exts in mapping.items():
             key = lenient_essence(mime)
-            if key is None or key != mime.strip().lower():
+            if key is None or key != str.strip(mime).lower():
                 raise ValueError("not a bare type/subtype media type")
             if isinstance(exts, str):
                 raise ValueError("extensions must be an iterable of strings, not a string")
             new = list(dict.fromkeys(normalize_extension(ext) for ext in exts))
             if not new:
                 raise ValueError("no extensions given")
-            old = types.get(key, Entry("custom", None, None, ()))
-            new_set = set(new)
-            merged = (*new, *(ext for ext in old.extensions if ext not in new_set))
-            types[key] = old._replace(extensions=merged)
+            if key not in updates:
+                old = types.get(key, Entry("custom", None, None, ()))
+                updates[key] = OrderedDict.fromkeys(old.extensions)
+            ordered = updates[key]
+            # Move only this batch, so normalized aliases never rescan prior batches.
+            for ext in reversed(new):
+                ordered[ext] = None
+                ordered.move_to_end(ext, last=False)
             for ext in new:
                 extensions[ext] = key
+        for key, ordered in updates.items():
+            old = types.get(key, Entry("custom", None, None, ()))
+            types[key] = old._replace(extensions=tuple(ordered))
         return MimeTable(types, extensions)
 
     def type_for_extension(self, ext: str) -> str | None:

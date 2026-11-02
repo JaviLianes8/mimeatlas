@@ -1,8 +1,8 @@
 """Deterministic, OS-independent extension and MIME type mapping from a vendored table.
 
-The table is generated from a committed snapshot of jshttp mime-db (MIT), which
-merges the IANA registry, Apache httpd and nginx data. Results never depend on
-the host operating system. See :func:`data_source` for provenance.
+The committed derived table is generated from a pinned, separately fetched snapshot
+of jshttp mime-db (MIT), which merges the IANA registry, Apache httpd and nginx data.
+Results never depend on the host operating system. See :func:`data_source` for provenance.
 
 ``Source`` is a Literal type alias for the six provenance labels:
 

@@ -31,7 +31,7 @@ def load_raw() -> dict[str, Any]:
 
 @functools.cache
 def default_table() -> MimeTable:
-    """Return the shared table built from the embedded mime-db snapshot.
+    """Return the shared table loaded from the embedded derived data.
 
     It is loaded on first use and cached. The table is immutable, so sharing it
     is safe; use :meth:`MimeTable.with_types` to derive a customised copy.
@@ -48,7 +48,8 @@ def default_table() -> MimeTable:
 def data_source() -> SourceInfo:
     """Return where the embedded table comes from and how big it is.
 
-    The values describe the committed snapshot the table was generated from:
+    The values describe the pinned, separately fetched snapshot used to generate
+    the committed derived table. Its manifest records the source; these values give
     the upstream release, the exact URL it was fetched from, the SHA-256 of the
     fetched bytes, the retrieval date and the upstream license.
 

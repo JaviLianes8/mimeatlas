@@ -129,7 +129,7 @@ def _sniff_file(name: str) -> str | None:
 def _info(mime: str, as_json: bool) -> int:
     found = media_type_info(mime)
     if found is None:
-        print("mimeguess: unknown MIME type", file=sys.stderr)
+        print("mimeguess: unknown MIME type for input 1", file=sys.stderr)
         return 1
     data = dataclasses.asdict(found)
     data["extensions"] = list(found.extensions)

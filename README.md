@@ -42,7 +42,12 @@ table.guess_type("index.d.ts")  # "text/x-typescript"
 ```
 
 Lookups are case insensitive and ignore parameters on a MIME type. Unknown or
-malformed string input to a lookup gives `None` (or an empty tuple) instead of raising.
+malformed lookup strings give `None`, an empty extension tuple, or `False` for
+`is_textual()`. Valid unregistered MIME types can still have inferred results:
+`default_charset()` gives `utf-8` for `text/*`; `is_textual()` recognizes `text/*`
+and `+json`, `+xml`, `+yaml`, `+json-seq`; `structured_suffix()` extracts any suffix.
+`guess()` always returns a `Guess`: unknown type and extension fields are `None`,
+while a recognized trailing content coding can still set its encoding.
 `essence()` raises `InvalidMediaType` (a `ValueError`) on malformed values,
 `MimeTable.with_types()` raises `ValueError` on bad overrides and `sniff()`
 raises `TypeError` for text.

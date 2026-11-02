@@ -42,7 +42,7 @@ def lenient_essence(value: str) -> str | None:
     """Like :func:`essence` but return ``None`` instead of raising."""
     if not isinstance(value, str):
         return None
-    head = value.split(";", 1)[0].strip()
+    head = str.split(value, ";", 1)[0].strip()
     match = _ESSENCE.fullmatch(head)
     return head.lower() if match else None
 

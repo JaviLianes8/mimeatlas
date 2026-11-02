@@ -30,7 +30,7 @@ def basename(path: str) -> str:
     """Return the last path component, treating ``/`` and ``\\`` as separators."""
     if not isinstance(path, str):
         raise TypeError("path must be a string")
-    return path.replace("\\", "/").rsplit("/", 1)[-1]
+    return str.replace(path, "\\", "/").rsplit("/", 1)[-1]
 
 
 def segments(path: str) -> list[str]:
@@ -81,7 +81,7 @@ def normalize_extension(ext: str) -> str:
     """
     if not isinstance(ext, str):
         raise ValueError("extension must be a string")
-    key = ext.lower().removeprefix(".")
+    key = str.lower(ext).removeprefix(".")
     bad = not key or any(not part for part in key.split("."))
     if bad or any(ch.isspace() or ch in "/\\" for ch in key):
         raise ValueError("not a valid file extension")
