@@ -64,6 +64,24 @@ def test_binary_subclasses_cannot_expand_the_sniff_prefix(kind: type[bytes | byt
     assert peak < 64_000
 
 
+@pytest.mark.parametrize("kind", [_Bytes, _Bytearray])
+@pytest.mark.parametrize("behavior", ["substitute", "raise"])
+def test_sniff_reads_binary_subclass_buffers_without_getitem(
+    kind: type[bytes | bytearray], behavior: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls: list[object] = []
+
+    def getitem(self: bytes | bytearray, key: object) -> bytes:
+        calls.append(key)
+        if behavior == "raise":
+            raise RuntimeError("slice override must not run")
+        return b"not a signature"
+
+    monkeypatch.setattr(kind, "__getitem__", getitem)
+    assert m.sniff(kind(b"%PDF-1.7")) == "application/pdf"
+    assert calls == []
+
+
 class _Text(str):
     def __getattribute__(self, name: str) -> object:
         if name in {"split", "strip", "lower", "replace"}:

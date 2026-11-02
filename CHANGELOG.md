@@ -50,6 +50,8 @@ All notable changes to this project are documented here. The format follows
   docstrings distinguish the fetched snapshot from the committed derived table.
 - Contracts cover backslash separators with hidden filenames, every provenance field,
   and distinct `True`, `False` and unknown compressibility in plain CLI output.
+- Sniff contracts reject prefix substitution and exceptions from bytes and bytearray
+  subclass slicing overrides, preserving the existing underlying-buffer behavior.
 
 ## [0.2.1]
 
