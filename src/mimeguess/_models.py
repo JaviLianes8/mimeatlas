@@ -16,7 +16,12 @@ marks types added through :meth:`MimeTable.with_types`.
 
 
 class InvalidMediaType(ValueError):
-    """Raised by :func:`essence` when a value is not a ``type/subtype`` token pair."""
+    """Raised by :func:`essence` when a value is not a ``type/subtype`` token pair.
+
+    >>> import mimeguess as m
+    >>> isinstance(m.InvalidMediaType("invalid"), ValueError)
+    True
+    """
 
 
 @dataclass(frozen=True)
@@ -29,6 +34,10 @@ class Guess:
             extension (``"gzip"`` for ``.gz``), or ``None``.
         extension: The table extension that produced ``type``, without a
             leading dot (``"tar"`` for ``backup.tar.gz``), or ``None``.
+
+    >>> import mimeguess as m
+    >>> m.Guess("application/pdf", None, "pdf").extension
+    'pdf'
     """
 
     type: str | None
@@ -50,6 +59,10 @@ class MediaTypeInfo:
         compressible: Whether the content usually compresses well, ``None``
             when the source data does not say.
         suffix: The structured syntax suffix (``"json"`` for ``+json``) or ``None``.
+
+    >>> import mimeguess as m
+    >>> m.MediaTypeInfo("image/png", "custom", (".png",), None, False, None).preferred_extension
+    '.png'
     """
 
     type: str
@@ -61,7 +74,12 @@ class MediaTypeInfo:
 
     @property
     def preferred_extension(self) -> str | None:
-        """The first extension, the one :func:`guess_extension` returns."""
+        """The first extension, the one :func:`guess_extension` returns.
+
+        >>> import mimeguess as m
+        >>> m.media_type_info("image/png").preferred_extension
+        '.png'
+        """
         return self.extensions[0] if self.extensions else None
 
 
@@ -78,6 +96,10 @@ class SourceInfo:
         license: License of the upstream data.
         type_count: Number of MIME types in the embedded table.
         extension_count: Number of extensions in the embedded table.
+
+    >>> import mimeguess as m
+    >>> isinstance(m.data_source(), m.SourceInfo)
+    True
     """
 
     name: str

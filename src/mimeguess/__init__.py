@@ -3,6 +3,12 @@
 The table is generated from a committed snapshot of jshttp mime-db (MIT), which
 merges the IANA registry, Apache httpd and nginx data. Results never depend on
 the host operating system. See :func:`data_source` for provenance.
+
+``Source`` is a Literal type alias for the six provenance labels:
+
+>>> from typing import get_args
+>>> get_args(Source)
+('iana', 'apache', 'nginx', 'mime-db', 'supplement', 'custom')
 """
 
 from __future__ import annotations
@@ -27,7 +33,7 @@ from ._models import Guess, InvalidMediaType, MediaTypeInfo, Source, SourceInfo
 from ._sniff import sniff
 from ._table import MimeTable
 
-__version__ = "0.2.1"
+__version__ = "1.0.0"
 
 __all__ = [
     "Guess",
@@ -54,3 +60,9 @@ __all__ = [
     "structured_suffix",
     "type_for_extension",
 ]
+
+# Public identities keep pickles independent of the implementation module layout.
+for _class in (Guess, InvalidMediaType, MediaTypeInfo, MimeTable, SourceInfo):
+    _class.__module__ = __name__
+del _class
+del annotations

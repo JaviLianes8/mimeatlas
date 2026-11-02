@@ -3,7 +3,7 @@
     "title": "jshttp mime-db 1.54.0, db.json",
     "url": "https://raw.githubusercontent.com/jshttp/mime-db/v1.54.0/db.json",
     "revision": "tag v1.54.0",
-    "fetched": "2026-10-13",
+    "fetched": "2026-11-02",
     "size": 203840,
     "sha256": "96b8a5746867c832ab56743c05e46e73c9facb04879677df0b356f20496cb6cd",
     "licence": "MIT, (c) 2014 Jonathan Ong, (c) 2015-2022 Douglas Christopher Wilson; see LICENSES/mime-db.txt"
@@ -12,9 +12,41 @@
     "title": "Apache httpd docs/conf/mime.types",
     "url": "https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types?p=1930012",
     "revision": "SVN revision 1930012",
-    "fetched": "2026-10-13",
+    "fetched": "2026-11-02",
     "size": 61109,
     "sha256": "f0aca42aa6ae1ea0c856e363d45a6abd67b3afe1bd59e64f256c5610fc84505b",
     "licence": "public domain per the file header (Apache httpd itself is Apache-2.0)"
+  },
+  "mimesniff.html": {
+    "url": "https://mimesniff.spec.whatwg.org/",
+    "revision": "retrieved 2026-11-02",
+    "fetched": "2026-11-02",
+    "size": 245766,
+    "sha256": "39dade0e50e7c8c72f0a35feb721eca88aec3ec9c1633618727ee577f1c0ff5c",
+    "licence": "CC BY 4.0"
+  },
+  "rfc9110.txt": {
+    "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "revision": "retrieved 2026-11-02",
+    "fetched": "2026-11-02",
+    "size": 502941,
+    "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+    "licence": "IETF Trust"
+  },
+  "mime-types-3.0.2.tgz": {
+    "url": "https://registry.npmjs.org/mime-types/-/mime-types-3.0.2.tgz",
+    "revision": "retrieved 2026-11-02",
+    "fetched": "2026-11-02",
+    "size": 7375,
+    "sha256": "2f9dd28353c303ff8750fbf68e474755b01c54a989883d227d605f7bfa3dd2ac",
+    "licence": "MIT"
+  },
+  "mime-db-1.54.0.tgz": {
+    "url": "https://registry.npmjs.org/mime-db/-/mime-db-1.54.0.tgz",
+    "revision": "retrieved 2026-11-02",
+    "fetched": "2026-11-02",
+    "size": 29535,
+    "sha256": "2b21054e65d0eabd58c5002d2713e968dd47b15700bfed4b7281a344ded1c420",
+    "licence": "MIT"
   }
 }

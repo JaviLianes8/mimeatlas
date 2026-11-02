@@ -6,6 +6,32 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-02
+
+### Stable
+
+- The 23 exported names, existing lookup signatures, return types and defaults.
+- The pinned mime-db 1.54.0 table: 2,524 types and 1,245 extensions; all previous
+  filename, MIME, charset, compression and override lookup results are retained.
+- Python 3.10 through 3.14, typed public API, console command and module command.
+
+### Changed
+
+- Validation errors no longer include caller values or type names. CLI errors identify
+  inputs by their one-based position instead of echoing paths, media types or arguments;
+  usage errors provide a generic reason and still exit 1.
+- Non-string paths raise a documented `TypeError` instead of an incidental `AttributeError`.
+- `sniff()` reads the first 16 raw bytes of contiguous memoryviews, including wide-element
+  and multidimensional views. Noncontiguous views must have one dimension and one-byte
+  elements; unsupported layouts raise `TypeError` instead of incidental buffer errors.
+  Released views retain their `ValueError` behavior.
+- Result classes, `MimeTable` and `InvalidMediaType` have public module identities for
+  serialization. Existing private import locations for result classes remain usable.
+- The incidental `annotations` attribute is removed from the package namespace;
+  `__all__` now describes exactly the public names.
+- Runnable API docstrings, external-source checks, seeded properties, packaging and
+  error contracts added. Source downloads can be redirected with `MIMEGUESS_DATA_DIR`.
+
 ## [0.2.1]
 
 ### Changed

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mimeguess"
-version = "0.2.1"
+version = "1.0.0"
 description = "Deterministic, OS-independent file extension and MIME type mapping generated from mime-db, zero dependencies"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,11 +13,17 @@ license-files = ["LICENSE", "LICENSES/mime-db.txt", "LICENSES/mime-types.txt"]
 authors = [{ name = "Javier Lianes", email = "javier@lianes8studio.com" }]
 keywords = ["mime", "mimetypes", "media-type", "content-type", "file-extension", "mime-db"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Environment :: Console",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+
     "Topic :: Internet :: WWW/HTTP",
     "Typing :: Typed",
 ]
@@ -27,11 +33,11 @@ dependencies = []
 mimeguess = "mimeguess._cli:main"
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy", "pytest", "build", "twine"]
+dev = ["ruff", "mypy", "pytest", "pytest-timeout", "build", "twine"]
 
 [project.urls]
 Homepage = "https://lianes8studio.com"
-Repository = "https://github.com/JaviLianes8/mimeguess"
+Source = "https://github.com/JaviLianes8/mimeguess"
 Issues = "https://github.com/JaviLianes8/mimeguess/issues"
 Changelog = "https://github.com/JaviLianes8/mimeguess/blob/main/CHANGELOG.md"
 LinkedIn = "https://www.linkedin.com/in/jlianes/"
@@ -73,3 +79,5 @@ mypy_path = ["src", "scripts"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-q"
+
+timeout = 300

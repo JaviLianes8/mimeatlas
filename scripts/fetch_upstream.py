@@ -11,15 +11,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 import urllib.request
 from pathlib import Path
 
-FOLDER = Path(__file__).resolve().parents[1] / "data"
+MANIFEST = Path(__file__).resolve().parents[1] / "data" / "MANIFEST.json"
+FOLDER = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(MANIFEST.parent)))
 
 
 def main() -> int:
-    manifest = json.loads((FOLDER / "MANIFEST.json").read_text(encoding="utf-8"))
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     failed = 0
     for name, entry in manifest.items():
         with urllib.request.urlopen(entry["url"], timeout=60) as response:

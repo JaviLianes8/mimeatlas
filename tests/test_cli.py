@@ -32,7 +32,7 @@ def test_type_of_several_paths_prefixes_each_line(capsys: pytest.CaptureFixture[
 def test_unknown_inputs_go_to_stderr_with_exit_one(capsys: pytest.CaptureFixture[str]) -> None:
     code, out, err = run(capsys, "type", "a.png", "x.unknownext")
     assert code == 1 and out == "a.png\timage/png\n"
-    assert "x.unknownext" in err
+    assert "no MIME type known for input 2" in err
 
 
 def test_content_type_and_encoding_modes(capsys: pytest.CaptureFixture[str]) -> None:
@@ -46,7 +46,7 @@ def test_ext_lists_extensions(capsys: pytest.CaptureFixture[str]) -> None:
     assert run(capsys, "ext", "image/jpeg")[1] == ".jpg .jpeg .jpe\n"
     assert run(capsys, "ext", "--preferred", "audio/mpeg")[1] == ".mp3\n"
     code, _, err = run(capsys, "ext", "application/x-nope")
-    assert code == 1 and "application/x-nope" in err
+    assert code == 1 and "no extension known for input 1" in err
 
 
 def test_info_text_and_json(capsys: pytest.CaptureFixture[str]) -> None:

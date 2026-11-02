@@ -42,7 +42,8 @@ on the operating system.
 class _Parser(argparse.ArgumentParser):
     def error(self, message: str) -> NoReturn:
         self.print_usage(sys.stderr)
-        self.exit(1, f"{self.prog}: error: {message}\n")
+        reason = "invalid choice" if "invalid choice:" in message else "invalid arguments"
+        self.exit(1, f"{self.prog}: error: {reason}; use --help\n")
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -78,15 +79,15 @@ def _parser() -> argparse.ArgumentParser:
 
 def _report(inputs: Sequence[str], lookup: Callable[[str], str | None], what: str) -> int:
     status = 0
-    for item in inputs:
+    for index, item in enumerate(inputs, 1):
         try:
             value = lookup(item)
-        except OSError as exc:
-            print(f"mimeguess: cannot read {item!r}: {exc.strerror or exc}", file=sys.stderr)
+        except (OSError, ValueError):
+            print(f"mimeguess: cannot read input {index}", file=sys.stderr)
             status = 1
             continue
         if value is None:
-            print(f"mimeguess: {what} for {item!r}", file=sys.stderr)
+            print(f"mimeguess: {what} for input {index}", file=sys.stderr)
             status = 1
         elif len(inputs) == 1:
             print(value)
@@ -128,7 +129,7 @@ def _sniff_file(name: str) -> str | None:
 def _info(mime: str, as_json: bool) -> int:
     found = media_type_info(mime)
     if found is None:
-        print(f"mimeguess: unknown MIME type {mime!r}", file=sys.stderr)
+        print("mimeguess: unknown MIME type", file=sys.stderr)
         return 1
     data = dataclasses.asdict(found)
     data["extensions"] = list(found.extensions)

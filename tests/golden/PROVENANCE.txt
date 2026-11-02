@@ -16,3 +16,7 @@ Package URLs:
   https://registry.npmjs.org/mime-types/-/mime-types-3.0.2.tgz
   https://registry.npmjs.org/mime-db/-/mime-db-1.54.0.tgz
 License of mime-types and mime-db: MIT (see LICENSES/).
+
+Reverified 2026-11-02: scripts/reference_mime_types.py executes the real packages
+from freshly fetched, hash-checked npm archives in data/MANIFEST.json. The complete
+conflict mapping equals this fixture; all 1,239 reference extensions are compared.

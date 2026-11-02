@@ -28,6 +28,8 @@ SUFFIX_ALIASES: dict[str, str] = {
 
 def basename(path: str) -> str:
     """Return the last path component, treating ``/`` and ``\\`` as separators."""
+    if not isinstance(path, str):
+        raise TypeError("path must be a string")
     return path.replace("\\", "/").rsplit("/", 1)[-1]
 
 
@@ -84,9 +86,9 @@ def normalize_extension(ext: str) -> str:
             contains whitespace, ``/`` or ``\\``.
     """
     if not isinstance(ext, str):
-        raise ValueError(f"extension must be a string, got {type(ext).__name__}")
+        raise ValueError("extension must be a string")
     key = ext.lower().removeprefix(".")
     bad = not key or any(not part for part in key.split("."))
     if bad or any(ch.isspace() or ch in "/\\" for ch in key):
-        raise ValueError(f"not a valid file extension: {ext!r}")
+        raise ValueError("not a valid file extension")
     return key

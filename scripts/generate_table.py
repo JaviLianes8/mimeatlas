@@ -20,6 +20,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -30,7 +31,7 @@ from _score import preferred
 from _supplement import EXTRA_EXTENSIONS, PREFERRED_EXTENSION
 
 ROOT = Path(__file__).resolve().parents[1]
-SNAPSHOT = ROOT / "data" / "mime-db-1.54.0.json"
+SNAPSHOT = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data"))) / "mime-db-1.54.0.json"
 OUT_DATA = ROOT / "src" / "mimeguess" / "_data.json.gz"
 OUT_META = ROOT / "src" / "mimeguess" / "_meta.py"
 

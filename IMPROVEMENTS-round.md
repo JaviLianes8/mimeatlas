@@ -1,5 +1,14 @@
 # Improvements, this round
 
+Progress for 1.0.0:
+- [x] API, docs, errors, source checks and seeded contracts
+- [ ] Packaging and interpreter matrix
+- [ ] Mutation round and final gates
+- [ ] Independent review, five QA lenses, merge and publication
+
+The detailed evidence and current status are in
+[CERT-1.0-REPORT.md](https://github.com/JaviLianes8/mimeguess/blob/release/1.0.0/CERT-1.0-REPORT.md).
+
 Ranked by value to users. Everything here is additive: the 0.1.0 functions keep
 their signatures and their documented behaviour.
 

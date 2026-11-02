@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import mimetypes
+import os
 from pathlib import Path
 
 import pytest
@@ -76,7 +77,10 @@ def test_content_coding_matches_the_standard_library(name: str) -> None:
     assert ours.type == std_type
 
 
-APACHE = ROOT / "data" / "apache-httpd-mime.types-r1930012"
+APACHE = (
+    Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data")))
+    / "apache-httpd-mime.types-r1930012"
+)
 needs_apache = pytest.mark.skipif(
     not APACHE.is_file(), reason="Apache mime.types not fetched; run scripts/fetch_upstream.py"
 )
