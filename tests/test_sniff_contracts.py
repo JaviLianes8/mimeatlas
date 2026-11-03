@@ -93,3 +93,55 @@ def test_sniff_rejects_case_altered_magic_signatures(signature: bytes) -> None:
             altered = signature[:index] + byte.swapcase() + signature[index + 1 :]
             assert m.sniff(altered) is None, altered
     assert m.sniff(signature.swapcase()) is None
+
+
+@pytest.mark.parametrize("buffer_kind", ["bytes", "bytearray", "stride-2", "stride-minus-2"])
+@pytest.mark.parametrize("offset", [1, 3])
+@pytest.mark.parametrize(
+    "signature",
+    [
+        b"\x89PNG\r\n\x1a\n",
+        b"\xff\xd8\xff",
+        b"GIF87a",
+        b"GIF89a",
+        b"II*\x00",
+        b"MM\x00*",
+        b"%PDF-",
+        b"PK\x03\x04",
+        b"PK\x05\x06",
+        b"PK\x07\x08",
+        b"\x1f\x8b\x08",
+        b"\xfd7zXZ\x00",
+        b"\x28\xb5\x2f\xfd",
+        b"7z\xbc\xaf\x27\x1c",
+        b"Rar!\x1a\x07\x00",
+        b"Rar!\x1a\x07\x01\x00",
+        b"OggS",
+        b"fLaC",
+        b"\x00asm",
+        b"wOFF",
+        b"wOF2",
+        b"SQLite format 3\x00",
+        b"BZh9",
+        b"RIFF\x00\x00\x00\x00WEBP",
+        b"RIFF\x00\x00\x00\x00WAVE",
+        b"RIFF\x00\x00\x00\x00AVI ",
+    ],
+)
+def test_sniff_requires_magic_signatures_at_offset_zero(
+    signature: bytes, offset: int, buffer_kind: str
+) -> None:
+    assert m.sniff(signature) is not None
+    shifted = b"x" * offset + signature
+    data: bytes | bytearray | memoryview
+    if buffer_kind == "bytes":
+        data = shifted
+    elif buffer_kind == "bytearray":
+        data = bytearray(shifted)
+    else:
+        stride = 2 if buffer_kind == "stride-2" else -2
+        backing = bytearray(2 * len(shifted))
+        data = memoryview(backing)[::stride]
+        data[:] = shifted
+        assert not data.c_contiguous and bytes(data) == shifted
+    assert m.sniff(data) is None

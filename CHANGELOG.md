@@ -58,6 +58,9 @@ All notable changes to this project are documented here. The format follows
 - Sniff contracts reject direct array buffers, accept signed one-byte views in both
   stride directions, require the complete SQLite signature in strided views, and
   reject case-altered magic signatures. Runtime behavior and the public API are unchanged.
+- Sniff contracts require magic signatures at offset zero for bytes, bytearray and
+  positive and negative strided memoryviews, rejecting signatures after unrelated bytes.
+  Runtime behavior and the public API are unchanged.
 
 ## [0.2.1]
 
