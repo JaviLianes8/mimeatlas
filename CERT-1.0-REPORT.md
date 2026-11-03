@@ -223,3 +223,36 @@ and pytest (249 passed, no skips, 300-second per-test timeout). Broader
 `mypy --strict src tests` also passes. Fresh wheel/sdist builds, distribution contents,
 installed-wheel consumers and all optional upstream-source checks pass on CPython 3.14.6.
 No findings disputed. Independent lens re-verification remains pending.
+
+## QA round 3: 2026-11-03
+
+Base: `93d019657d8638ca131526d26935852807f9d9ba`.
+Fix commit: `strengthen sniff subclass and strided-buffer contracts`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-05 | Eight contracts cover bytes and bytearray subclasses with misleading or raising `__bool__` and `__len__` overrides; PDF recognition succeeds without calling the overrides. |
+| E-06 | Four contracts cover misleading or raising `startswith` overrides on bytes and bytearray subclasses; PDF recognition succeeds without calling the overrides. |
+| E-07 | Four memory contracts cover positive and negative strides over 400,000-byte and 4,000,000-byte buffers; recognition succeeds with peak allocation below 64,000 bytes, measured after input allocation. |
+
+These are missing-coverage findings. All 16 new cases pass against the existing
+implementation; production code, runtime behavior and the public API are unchanged.
+The CHANGELOG records the strengthened contracts.
+
+Each reported mutation was applied separately to a scratch source copy and tested
+in a fresh process with bytecode writing disabled. The source copy was restored afterward.
+
+| Finding | Mutation | Catching test | Result |
+| --- | --- | --- | --- |
+| E-05 | Insert `if not data: return None` before buffer creation | `test_sniff_ignores_binary_subclass_truthiness` | 8 failures |
+| E-06 | Match prefixes using the bytes subclass's `startswith` | `test_sniff_ignores_binary_subclass_startswith` | 2 failures |
+| E-07 | Replace `bytes(view[:SNIFF_BYTES])` with `bytes(view)[:SNIFF_BYTES]` | `test_sniff_copies_only_the_required_prefix_of_a_strided_view` | 4 failures |
+
+E-07's mutated peak allocations were 400,337 and 4,000,337 bytes for both stride
+directions. All three reported mutations are caught; no findings are disputed.
+
+All four gates exit 0: `ruff format --check .`, `ruff check .`, `mypy --strict src`
+and pytest (265 passed, no skips, 300-second per-test timeout). Broader
+`mypy --strict src tests` also passes. Fresh wheel/sdist builds, distribution contents,
+installed-wheel consumers and all optional upstream-source checks pass on CPython 3.14.6.
+Independent lens re-verification remains pending.

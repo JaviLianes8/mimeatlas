@@ -52,6 +52,9 @@ All notable changes to this project are documented here. The format follows
   and distinct `True`, `False` and unknown compressibility in plain CLI output.
 - Sniff contracts reject prefix substitution and exceptions from bytes and bytearray
   subclass slicing overrides, preserving the existing underlying-buffer behavior.
+- Sniff contracts also ignore misleading or raising subclass truthiness, length and
+  prefix-method overrides, and enforce bounded copying for large strided memoryviews.
+  Runtime behavior and the public API are unchanged.
 
 ## [0.2.1]
 

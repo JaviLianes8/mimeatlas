@@ -82,6 +82,43 @@ def test_sniff_reads_binary_subclass_buffers_without_getitem(
     assert calls == []
 
 
+@pytest.mark.parametrize("kind", [_Bytes, _Bytearray])
+@pytest.mark.parametrize("method", ["__bool__", "__len__"])
+@pytest.mark.parametrize("behavior", ["substitute", "raise"])
+def test_sniff_ignores_binary_subclass_truthiness(
+    kind: type[bytes | bytearray], method: str, behavior: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls: list[str] = []
+
+    def override(self: bytes | bytearray) -> bool:
+        calls.append(method)
+        if behavior == "raise":
+            raise RuntimeError("truthiness override must not run")
+        return False
+
+    monkeypatch.setattr(kind, method, override, raising=False)
+    assert m.sniff(kind(b"%PDF-1.7")) == "application/pdf"
+    assert calls == []
+
+
+@pytest.mark.parametrize("kind", [_Bytes, _Bytearray])
+@pytest.mark.parametrize("behavior", ["substitute", "raise"])
+def test_sniff_ignores_binary_subclass_startswith(
+    kind: type[bytes | bytearray], behavior: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls: list[tuple[object, ...]] = []
+
+    def startswith(self: bytes | bytearray, *args: object) -> bool:
+        calls.append(args)
+        if behavior == "raise":
+            raise RuntimeError("startswith override must not run")
+        return False
+
+    monkeypatch.setattr(kind, "startswith", startswith)
+    assert m.sniff(kind(b"%PDF-1.7")) == "application/pdf"
+    assert calls == []
+
+
 class _Text(str):
     def __getattribute__(self, name: str) -> object:
         if name in {"split", "strip", "lower", "replace"}:

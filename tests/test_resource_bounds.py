@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import tracemalloc
 
+import pytest
+
 import mimeguess as m
 
 
@@ -11,6 +13,22 @@ def test_sniff_copies_only_the_required_prefix_of_a_multidimensional_view() -> N
     data = bytearray(2_000_000)
     data[:5] = b"%PDF-"
     view = memoryview(data).cast("B", (1, len(data)))
+    tracemalloc.start()
+    try:
+        assert m.sniff(view) == "application/pdf"
+        _, peak = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    assert peak < 64_000
+
+
+@pytest.mark.parametrize("size", [400_000, 4_000_000])
+@pytest.mark.parametrize("stride", [2, -2])
+def test_sniff_copies_only_the_required_prefix_of_a_strided_view(size: int, stride: int) -> None:
+    data = bytearray(size)
+    view = memoryview(data)[::stride]
+    view[:5] = b"%PDF-"
+    assert not view.c_contiguous
     tracemalloc.start()
     try:
         assert m.sniff(view) == "application/pdf"
