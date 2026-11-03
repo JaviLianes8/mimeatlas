@@ -55,6 +55,9 @@ All notable changes to this project are documented here. The format follows
 - Sniff contracts also ignore misleading or raising subclass truthiness, length and
   prefix-method overrides, and enforce bounded copying for large strided memoryviews.
   Runtime behavior and the public API are unchanged.
+- Sniff contracts reject direct array buffers, accept signed one-byte views in both
+  stride directions, require the complete SQLite signature in strided views, and
+  reject case-altered magic signatures. Runtime behavior and the public API are unchanged.
 
 ## [0.2.1]
 

@@ -256,3 +256,39 @@ and pytest (265 passed, no skips, 300-second per-test timeout). Broader
 `mypy --strict src tests` also passes. Fresh wheel/sdist builds, distribution contents,
 installed-wheel consumers and all optional upstream-source checks pass on CPython 3.14.6.
 Independent lens re-verification remains pending.
+
+## QA round 4: 2026-11-03
+
+Base: `d2593528265775f9bbec8fa4a7e4d518550fe852`.
+Fix commit: the commit adding `tests/test_sniff_contracts.py` and this section.
+
+| Finding | Resolution |
+| --- | --- |
+| E-08 | Direct signed and unsigned arrays raise `TypeError`; their memoryview wrappers recognize PDF. |
+| E-09 | Signed one-byte views recognize PDF and PNG in positive and negative stride directions, including PNG bytes above 127. |
+| E-10 | Positive and negative strided views reject the 15-byte SQLite prefix and recognize the complete 16-byte signature, with or without a trailing byte. |
+| E-11 | Each alphabetic byte in 23 hand-written magic signatures is case-swapped independently and rejected; swapping all alphabetic bytes is also rejected, including lowercase `%pdf-`. |
+
+These are missing-coverage findings. All 37 new cases pass against the existing
+implementation; production code, runtime behavior and the public API are unchanged.
+The CHANGELOG records the strengthened contracts.
+
+Each reported mutation was applied separately to a scratch source copy and tested
+in a fresh process with bytecode writing disabled. Baseline and restored-source
+runs each passed all 37 cases. Catching tests are in `tests/test_sniff_contracts.py`.
+
+| Finding | Mutation | Catching test | Result |
+| --- | --- | --- | --- |
+| E-08 | Replace the input-type guard with `if False:` | `test_sniff_rejects_direct_array_buffers` | 2 failures |
+| E-09 | Require format `B` for one-byte strided views | `test_sniff_accepts_signed_one_byte_strided_views` | 4 failures |
+| E-10 | Copy only `SNIFF_BYTES - 1` bytes from strided views | `test_sniff_checks_the_complete_sqlite_signature_in_strided_views` | 4 failures |
+| E-11 | Lowercase both the input prefix and magic signature before matching | `test_sniff_rejects_case_altered_magic_signatures` | 19 failures |
+
+All four reported mutations are caught; no findings are disputed.
+
+All four gates exit 0: `ruff format --check .`, `ruff check .`, `mypy --strict src`
+and pytest (302 passed, no skips, 300-second per-test timeout). Broader
+`mypy --strict src tests scripts` and the table generator check also pass.
+Fresh wheel/sdist builds, strict twine checks, distribution contents, installed-wheel
+consumers and all optional upstream-source checks pass on CPython 3.14.6.
+Independent lens re-verification remains pending.
