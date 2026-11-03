@@ -292,3 +292,36 @@ and pytest (302 passed, no skips, 300-second per-test timeout). Broader
 Fresh wheel/sdist builds, strict twine checks, distribution contents, installed-wheel
 consumers and all optional upstream-source checks pass on CPython 3.14.6.
 Independent lens re-verification remains pending.
+
+## QA round 5: 2026-11-03
+
+Base: `a504366f0f352d12ba22e46d12aff22ff7808fec`.
+Fix commit: `d4333f9d41275ab7a1bc324ad540902b798b8dcd`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-12 | 208 cases require magic signatures at offset zero: 26 hand-written signatures shifted by one or three unrelated bytes, across bytes, bytearray and positive and negative strided memoryviews. |
+
+This is a missing-coverage finding. All 208 new cases pass against the existing
+implementation; production code, runtime behavior and the public API are unchanged.
+The CHANGELOG records the strengthened contracts. Each signature is also checked
+for recognition before shifting it.
+
+The reported mutation, replacing `head.startswith(prefix)` with `prefix in head`,
+was applied to a scratch source copy and tested in a fresh process with bytecode
+writing disabled. Baseline and restored-source runs each passed all 208 cases.
+
+| Finding | Mutation | Catching test | Result |
+| --- | --- | --- | --- |
+| E-12 | Accept prefix signatures at nonzero offsets | `tests/test_sniff_contracts.py::test_sniff_requires_magic_signatures_at_offset_zero` | 168 failures |
+
+The remaining 40 cases cover the 16-byte SQLite signature, which no longer fits
+inside the read window after shifting, and the separate bzip2 and RIFF branches.
+The reported mutation is caught; no findings are disputed.
+
+All four gates exit 0: `ruff format --check .`, `ruff check .`, `mypy --strict src`
+and pytest (510 passed, no skips, 300-second per-test timeout). Broader
+`mypy --strict src tests scripts` and the table generator check also pass.
+Fresh wheel/sdist builds, strict twine checks, distribution contents, installed-wheel
+consumers and all optional upstream-source checks pass on CPython 3.14.6.
+Independent lens re-verification remains pending.
