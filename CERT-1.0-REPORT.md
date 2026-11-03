@@ -325,3 +325,32 @@ and pytest (510 passed, no skips, 300-second per-test timeout). Broader
 Fresh wheel/sdist builds, strict twine checks, distribution contents, installed-wheel
 consumers and all optional upstream-source checks pass on CPython 3.14.6.
 Independent lens re-verification remains pending.
+
+## QA round 6: 2026-11-03
+
+Base: `e085d2e52a7a686660d55c1a2a47933eed256a08`.
+Fix commit: `d549f0731c141b74ddd8f21d1bea659b0c6416b9`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-13 | `sniff(b"abc1BZh")` must return `None`: a bzip2 marker after unrelated bytes must not borrow the preceding byte as its block-size digit. |
+| E-14 | `b"xxxxRIFFWEBP"`, `b"xxxxRIFFWAVE"` and `b"xxxxRIFFAVI "` must return `None`: a RIFF marker at offset 4 must not pair with a form type that happens to sit at bytes 8 to 12. |
+
+Both are missing-coverage findings. The 16 new cases in
+`tests/test_sniff_contracts.py::test_sniff_requires_bzip2_and_riff_markers_at_offset_zero`
+cover bytes, bytearray and positive and negative strided memoryviews, and all pass
+against the existing implementation; production code, runtime behavior and the public
+API are unchanged. The CHANGELOG records the strengthened contracts.
+
+Each reported mutation was applied to a scratch source copy and tested in a fresh
+process with bytecode writing disabled; the restored source passed all 16 cases.
+
+| Finding | Mutation | Catching test | Result |
+| --- | --- | --- | --- |
+| E-13 | `head.startswith(b"BZh")` replaced by `b"BZh" in head` | `test_sniff_requires_bzip2_and_riff_markers_at_offset_zero` | 4 failures |
+| E-14 | `head.startswith(b"RIFF")` replaced by `b"RIFF" in head` | `test_sniff_requires_bzip2_and_riff_markers_at_offset_zero` | 12 failures |
+
+No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
+`mypy --strict src` and pytest (521 passed, 5 skipped for absent optional inputs,
+300-second per-test timeout, fresh CPython 3.14 venv). `mypy --strict src tests scripts`
+also passes. Independent lens re-verification remains pending.
