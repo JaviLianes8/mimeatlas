@@ -115,3 +115,12 @@ def test_sniff_messages_are_exact(capsys: pytest.CaptureFixture[str], tmp_path: 
 def test_sniff_reports_unopenable_names_as_unreadable(capsys: pytest.CaptureFixture[str]) -> None:
     # open() raises ValueError, not OSError, for a name with an embedded NUL.
     assert run(capsys, "sniff", "a\x00b") == (1, "", "mimeatlas: cannot read input 1\n")
+
+
+def test_sniff_reads_a_full_sixteen_byte_signature_from_a_file(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    # The SQLite signature fills the whole sniff window (16 bytes), so a short read would miss it.
+    db = tmp_path / "x.sqlite"
+    db.write_bytes(b"SQLite format 3\x00" + bytes(100))
+    assert run(capsys, "sniff", str(db)) == (0, "application/vnd.sqlite3\n", "")

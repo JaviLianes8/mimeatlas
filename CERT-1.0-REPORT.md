@@ -474,3 +474,13 @@ Lens e round 10 at 06f8791 confirmed E-17 and E-18 fixed and found one surviving
 | E-19 | low | `except (OSError, ValueError)` narrowed to `except OSError` in `_report` survived: no test reached the ValueError branch | `tests/test_cli_messages.py::test_sniff_reports_unopenable_names_as_unreadable` pins that a name with an embedded NUL (open() raises ValueError) reports `mimeatlas: cannot read input 1` and exits 1 |
 
 The mutant was re-run against the new test and fails it; the source was restored byte for byte. No production code changed.
+
+## QA round 12: 2026-11-04
+
+Lens e round 11 at a13a46f confirmed E-19 fixed; its 10-probe sweep killed 9 mutants and found one survivor.
+
+| id | severity | finding | change |
+| --- | --- | --- | --- |
+| E-20 | low | `_sniff_file` reading `SNIFF_BYTES - 1` from a file survived: no CLI test sniffed a signature that fills the 16-byte window by path | `tests/test_cli_messages.py::test_sniff_reads_a_full_sixteen_byte_signature_from_a_file` sniffs a SQLite file by path and expects `application/vnd.sqlite3`, exit 0 |
+
+The mutant was re-run against the new test and fails it; the source was restored byte for byte. No production code changed.
