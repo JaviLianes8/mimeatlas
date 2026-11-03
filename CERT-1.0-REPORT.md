@@ -484,3 +484,15 @@ Lens e round 11 at a13a46f confirmed E-19 fixed; its 10-probe sweep killed 9 mut
 | E-20 | low | `_sniff_file` reading `SNIFF_BYTES - 1` from a file survived: no CLI test sniffed a signature that fills the 16-byte window by path | `tests/test_cli_messages.py::test_sniff_reads_a_full_sixteen_byte_signature_from_a_file` sniffs a SQLite file by path and expects `application/vnd.sqlite3`, exit 0 |
 
 The mutant was re-run against the new test and fails it; the source was restored byte for byte. No production code changed.
+
+## QA round 13: 2026-11-04
+
+Lens e round 12 at 3687a44 confirmed E-20 fixed and found three low-severity gaps in how `sniff` reads its inputs.
+
+| id | severity | finding | change |
+| --- | --- | --- | --- |
+| E-21 | low | stdin read of `SNIFF_BYTES - 1` survived | `tests/test_cli_sniff_reads.py::test_stdin_reads_one_full_window`: a SQLite header on stdin is recognised and stdin sees exactly one `read(16)` |
+| E-22 | low | unbounded `read()` on a file or on stdin survived | the same test and `test_file_reads_one_full_window` record every read size and require exactly `[16]` |
+| E-23 | low | `name.startswith("-")` instead of `name == "-"` survived | `test_only_a_bare_dash_means_stdin`: files named `-x.png` and `--` (after `--`) are read from disk and stdin is never touched |
+
+Own extra probes on the same code (all killed by the new tests): `read(SNIFF_BYTES + 1)` on stdin and on files, text-mode open, and treating `--` as stdin. No production code changed.
