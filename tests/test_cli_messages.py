@@ -110,3 +110,8 @@ def test_sniff_messages_are_exact(capsys: pytest.CaptureFixture[str], tmp_path: 
     expected = "mimeatlas: unrecognised content for input 1\nmimeatlas: cannot read input 2\n"
     assert run(capsys, "sniff", str(text), missing) == (1, "", expected)
     assert run(capsys, "sniff", missing) == (1, "", "mimeatlas: cannot read input 1\n")
+
+
+def test_sniff_reports_unopenable_names_as_unreadable(capsys: pytest.CaptureFixture[str]) -> None:
+    # open() raises ValueError, not OSError, for a name with an embedded NUL.
+    assert run(capsys, "sniff", "a\x00b") == (1, "", "mimeatlas: cannot read input 1\n")

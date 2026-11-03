@@ -464,3 +464,13 @@ The three mutants from the report were applied one at a time to a scratch copy o
 No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
 `mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
 Independent lens re-verification remains pending.
+
+## QA round 11: 2026-11-04
+
+Lens e round 10 at 06f8791 confirmed E-17 and E-18 fixed and found one surviving mutant in the CLI read handler.
+
+| id | severity | finding | change |
+| --- | --- | --- | --- |
+| E-19 | low | `except (OSError, ValueError)` narrowed to `except OSError` in `_report` survived: no test reached the ValueError branch | `tests/test_cli_messages.py::test_sniff_reports_unopenable_names_as_unreadable` pins that a name with an embedded NUL (open() raises ValueError) reports `mimeatlas: cannot read input 1` and exits 1 |
+
+The mutant was re-run against the new test and fails it; the source was restored byte for byte. No production code changed.
