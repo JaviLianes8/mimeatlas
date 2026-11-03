@@ -393,3 +393,42 @@ result and are recorded here instead of being tested.
 No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
 `mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
 Independent lens re-verification remains pending.
+
+## QA round 8: 2026-11-03
+
+Base: `9b4f9b60dbdd71f067ba9bb563e1b3e251f7c99a`.
+Fix commits: `b5b7465a2c01fa19019500004ae263c68c63390d`, `fc7e260341cfa1b8b681ca745a603fe5b87c4981`.
+Rename commit: `3d44664` (see below).
+
+| Finding | Resolution |
+| --- | --- |
+| E-16 | Non-contiguous multidimensional views must raise `TypeError`. The only test that pinned it needed numpy, which the dev extras do not install, so mutant P7 (`elif view.ndim == 1 and view.itemsize == 1:` to `elif view.itemsize == 1:`) survived the gate environment. |
+
+This is a missing-coverage finding. The new standard-library-only `tests/test_sniff_layouts.py`
+builds two-dimensional, non-contiguous byte views with `memoryview.cast` and with `ctypes`
+arrays, for strides 2 and -2, whose row-wise first bytes form a PDF signature, and requires
+`TypeError`. Further contracts pin Fortran-only views, strided wide-element views and strided
+zero-size-element views without numpy, and `tests/test_sniff_signature_prefixes.py` pins that
+every fixed signature is matched in full. Production code, runtime behavior and the public API
+are unchanged.
+
+Mutant P7 was applied to the source in a fresh CPython 3.14 venv with `.[dev]` and no numpy
+(bytecode writing disabled, source restored afterwards): killed by the four
+`test_sniff_rejects_non_contiguous_multidimensional_byte_views` cases and by
+`test_sniff_rejects_fortran_only_views_without_optional_packages`.
+
+### Rename
+
+PyPI refused the previous distribution name at upload, so the distribution, the import package
+(`src/mimeatlas`), the console command, the developer variable `MIMEATLAS_DATA_DIR`, the tests,
+the docs and the project URLs now use `mimeatlas`. HTTP 404 was confirmed on 2026-11-03 for
+`mimeatlas`, `mime-atlas`, `mime_atlas` and `mime.atlas` on the PyPI JSON API. The CHANGELOG
+records the rename. On a clean machine after the rename: `python -m build` produced
+`mimeatlas-1.0.0.tar.gz` and `mimeatlas-1.0.0-py3-none-any.whl`, `twine check --strict` passed
+both, and the wheel installed into a throwaway venv ran `mimeatlas --version`, `mimeatlas type`,
+`mimeatlas ext` and `python -m mimeatlas` with the expected output, while the old import name
+is absent.
+
+No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
+`mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
+Independent lens re-verification remains pending.
