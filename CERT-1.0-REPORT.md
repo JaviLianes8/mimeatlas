@@ -496,3 +496,13 @@ Lens e round 12 at 3687a44 confirmed E-20 fixed and found three low-severity gap
 | E-23 | low | `name.startswith("-")` instead of `name == "-"` survived | `test_only_a_bare_dash_means_stdin`: files named `-x.png` and `--` (after `--`) are read from disk and stdin is never touched |
 
 Own extra probes on the same code (all killed by the new tests): `read(SNIFF_BYTES + 1)` on stdin and on files, text-mode open, and treating `--` as stdin. No production code changed.
+
+## QA round 14: 2026-11-04
+
+Lens e round 13 at 5a0010e confirmed E-21, E-22 and E-23 fixed; its sweep killed 9 of 10 probes.
+
+| id | severity | finding | change |
+| --- | --- | --- | --- |
+| E-24 | low | `name.strip() == "-"` survived: a real file named `" -"` would have been read from stdin | `test_only_a_bare_dash_means_stdin` is parametrised over `-x.png`, `--`, `" -"`, `"  -"`, `x-`, `-0`, `-.`, `" --"`: each is read from disk and stdin is never touched |
+
+Own probes on the stdin test (all killed): `strip`, `lstrip`, `startswith`, `endswith`, slicing, `replace`, membership, `in ("-", "--")`, `strip(".")`, `rstrip("0")`. No production code changed.

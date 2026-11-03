@@ -72,16 +72,17 @@ def test_file_reads_one_full_window(
     assert [r.sizes for r in readers] == [[SNIFF_BYTES]]
 
 
+@pytest.mark.parametrize("name", ["-x.png", "--", " -", "  -", "x-", "-0", "-.", " --"])
 def test_only_a_bare_dash_means_stdin(
     capsys: pytest.CaptureFixture[str],
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+    name: str,
 ) -> None:
+    # Names that merely start with, end with, or strip down to "-" are real files.
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "-x.png").write_bytes(PNG)
-    (tmp_path / "--").write_bytes(PNG)
+    (tmp_path / name).write_bytes(PNG)
     stdin = FakeStdin(SQLITE)
     monkeypatch.setattr(sys, "stdin", stdin)
-    assert run(capsys, "sniff", "--", "-x.png") == (0, "image/png\n", "")
-    assert run(capsys, "sniff", "--", "--") == (0, "image/png\n", "")
+    assert run(capsys, "sniff", "--", name) == (0, "image/png\n", "")
     assert stdin.buffer.sizes == []
