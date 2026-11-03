@@ -64,6 +64,9 @@ All notable changes to this project are documented here. The format follows
 - Sniff contracts reject a bzip2 marker or a RIFF marker that appears after unrelated
   bytes, even when a valid version digit or form type sits where the format expects it.
   Runtime behavior and the public API are unchanged.
+- Sniff contracts reject a bare 3-byte `BZh` and RIFF headers one byte short of a form
+  type for bytes, bytearray and positive and negative strided memoryviews, and pin the
+  documented 16-byte sniff prefix. Runtime behavior and the public API are unchanged.
 
 ## [0.2.1]
 

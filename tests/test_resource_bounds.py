@@ -49,3 +49,11 @@ def test_long_compound_extensions_do_not_allocate_every_possible_suffix() -> Non
     finally:
         tracemalloc.stop()
     assert peak < 8_000_000
+
+
+def test_sniff_reads_exactly_the_documented_sixteen_byte_prefix() -> None:
+    # The CLI reads SNIFF_BYTES from a file or stdin, so the bound is a promise, not a detail.
+    from mimeguess._sniff import SNIFF_BYTES
+
+    assert SNIFF_BYTES == 16
+    assert "Only the first 16 bytes are read." in (m.sniff.__doc__ or "")

@@ -168,3 +168,26 @@ def test_sniff_requires_bzip2_and_riff_markers_at_offset_zero(
         buffer[:] = data
         assert not buffer.c_contiguous and bytes(buffer) == data
     assert m.sniff(buffer) is None
+
+
+@pytest.mark.parametrize("buffer_kind", ["bytes", "bytearray", "stride-2", "stride-minus-2"])
+@pytest.mark.parametrize(
+    "data",
+    [b"BZh", b"RIFF\x00\x00\x00\x00WEB", b"RIFF\x00\x00\x00\x00WAV", b"RIFF\x00\x00\x00\x00AVI"],
+    ids=["bzip2-3-bytes", "riff-webp-11-bytes", "riff-wave-11-bytes", "riff-avi-11-bytes"],
+)
+def test_sniff_rejects_markers_one_byte_short_of_their_length_guard(
+    data: bytes, buffer_kind: str
+) -> None:
+    # A bare b"BZh" has an empty digit slice, and b"" is in every bytes object.
+    buffer: bytes | bytearray | memoryview
+    if buffer_kind == "bytes":
+        buffer = data
+    elif buffer_kind == "bytearray":
+        buffer = bytearray(data)
+    else:
+        stride = 2 if buffer_kind == "stride-2" else -2
+        buffer = memoryview(bytearray(2 * len(data)))[::stride]
+        buffer[:] = data
+        assert not buffer.c_contiguous and bytes(buffer) == data
+    assert m.sniff(buffer) is None
