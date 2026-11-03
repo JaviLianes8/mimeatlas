@@ -260,7 +260,7 @@ Independent lens re-verification remains pending.
 ## QA round 4: 2026-11-03
 
 Base: `d2593528265775f9bbec8fa4a7e4d518550fe852`.
-Fix commit: the commit adding `tests/test_sniff_contracts.py` and this section.
+Fix commit: `ae1c5fbd344de7a0ff0c1d4570b65e6346a12c7a`.
 
 | Finding | Resolution |
 | --- | --- |
