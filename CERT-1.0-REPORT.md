@@ -432,3 +432,35 @@ is absent.
 No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
 `mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
 Independent lens re-verification remains pending.
+
+## QA round 10: 2026-11-04
+
+Base: `7db89c3e60412465538b6d6d1181ade864450517`.
+Fix commit: `197341debca15348a58ee96681128b7a330bf231`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-17 | The program name `mimeatlas` was not pinned: mutant `prog="mimeatlas"` to `prog="mimeguess"` survived because usage-error tests only checked `"error" in err`. |
+| E-18 | The stderr lines `mimeatlas: cannot read input {index}` and `mimeatlas: {what} for input {index}` were only checked by substring, so restoring the old prefix survived. |
+
+Both are missing-coverage findings. The new `tests/test_cli_messages.py` pins with exact-match
+contracts the program name, the full top-level usage line (also as the first line of
+`--help`), the complete stderr text and exit status of every usage error (top level and each
+subcommand, invalid choice and invalid arguments), and every per-input stderr line of `type`,
+`type --encoding`, `ext`, `ext --preferred`, `info` and `sniff` (unrecognised content and
+unreadable input). The terminal width and colour environment are fixed in the test so usage
+lines do not wrap or carry colour codes. Production code, runtime behavior and the public API
+are unchanged, so the CHANGELOG is unchanged.
+
+The three mutants from the report were applied one at a time to a scratch copy of the source
+(bytecode writing disabled, source restored byte for byte afterwards) and each is killed:
+
+| Mutant | Killed by |
+| --- | --- |
+| R15 `prog="mimeatlas"` to `prog="mimeguess"` | `test_program_name_is_mimeatlas`, `test_full_usage_line`, `test_help_starts_with_the_usage_line`, `test_usage_errors_are_exact` |
+| R17 `"mimeatlas: cannot read input"` to old name | `test_sniff_messages_are_exact` |
+| R18 `"mimeatlas: {what} for input"` to old name | `test_unknown_path_message_is_exact`, `test_unknown_type_message_is_exact`, `test_sniff_messages_are_exact` |
+
+No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
+`mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
+Independent lens re-verification remains pending.
