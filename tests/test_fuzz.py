@@ -7,7 +7,7 @@ import string
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 
 @pytest.mark.parametrize("seed", [4123, 8701, 9007])

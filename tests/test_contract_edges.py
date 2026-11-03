@@ -10,14 +10,14 @@ from typing import get_args, get_type_hints
 
 import pytest
 
-import mimeguess as m
-from mimeguess._cli import main
+import mimeatlas as m
+from mimeatlas._cli import main
 
 
 def test_type_alias_and_public_identities() -> None:
     assert get_args(m.Source) == ("iana", "apache", "nginx", "mime-db", "supplement", "custom")
     for cls in (m.Guess, m.MediaTypeInfo, m.SourceInfo, m.MimeTable, m.InvalidMediaType):
-        assert cls.__module__ == "mimeguess"
+        assert cls.__module__ == "mimeatlas"
     for name in m.__all__:
         obj = getattr(m, name)
         if callable(obj) and name not in ("Source", "InvalidMediaType"):

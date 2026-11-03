@@ -25,7 +25,7 @@ def _entry(mime: str, row: Any) -> Entry:
 
 def load_raw() -> dict[str, Any]:
     """Return the decoded embedded table as stored in the package."""
-    blob = importlib.resources.files("mimeguess").joinpath("_data.json.gz").read_bytes()
+    blob = importlib.resources.files("mimeatlas").joinpath("_data.json.gz").read_bytes()
     return cast("dict[str, Any]", json.loads(gzip.decompress(blob)))
 
 
@@ -36,7 +36,7 @@ def default_table() -> MimeTable:
     It is loaded on first use and cached. The table is immutable, so sharing it
     is safe; use :meth:`MimeTable.with_types` to derive a customised copy.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.default_table() is m.default_table()
     True
     """
@@ -53,7 +53,7 @@ def data_source() -> SourceInfo:
     the upstream release, the exact URL it was fetched from, the SHA-256 of the
     fetched bytes, the retrieval date and the upstream license.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.data_source().version
     '1.54.0'
     """

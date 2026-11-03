@@ -1,4 +1,4 @@
-# mimeguess
+# mimeatlas
 
 [![Lianes8 Certified](https://lianes8studio.com/certified/lianes8-certified-badge.svg)](https://lianes8studio.com/certified)
 
@@ -8,36 +8,36 @@ from mime-db, zero dependencies.
 ## Install
 
 ```
-pip install mimeguess
+pip install mimeatlas
 ```
 
 ## Usage
 
 ```python
-import mimeguess
+import mimeatlas
 
-mimeguess.guess_type("report.pdf")  # "application/pdf"
-mimeguess.guess_type("PHOTO.JPG")  # "image/jpeg"
-mimeguess.guess_type("backup.tar.gz")  # "application/gzip"
-mimeguess.guess_type("Makefile")  # None
+mimeatlas.guess_type("report.pdf")  # "application/pdf"
+mimeatlas.guess_type("PHOTO.JPG")  # "image/jpeg"
+mimeatlas.guess_type("backup.tar.gz")  # "application/gzip"
+mimeatlas.guess_type("Makefile")  # None
 
-mimeguess.guess_extension("image/png")  # ".png"
-mimeguess.guess_extension("text/html; charset=utf-8")  # ".html"
-mimeguess.extensions_for("image/jpeg")  # (".jpg", ".jpeg", ".jpe")
+mimeatlas.guess_extension("image/png")  # ".png"
+mimeatlas.guess_extension("text/html; charset=utf-8")  # ".html"
+mimeatlas.extensions_for("image/jpeg")  # (".jpg", ".jpeg", ".jpe")
 
-mimeguess.guess("site.tar.gz")
+mimeatlas.guess("site.tar.gz")
 # Guess(type='application/x-tar', encoding='gzip', extension='tar')
-mimeguess.content_type_for("index.html")  # "text/html; charset=utf-8"
-mimeguess.media_type_info("application/ld+json")
+mimeatlas.content_type_for("index.html")  # "text/html; charset=utf-8"
+mimeatlas.media_type_info("application/ld+json")
 # MediaTypeInfo(type='application/ld+json', source='iana', extensions=('.jsonld',),
 #               charset=None, compressible=True, suffix='json')
 
-mimeguess.structured_suffix("image/svg+xml")  # "xml"
-mimeguess.essence("Text/HTML; charset=UTF-8")  # "text/html"
-mimeguess.sniff(b"%PDF-1.7 ...")  # "application/pdf"
+mimeatlas.structured_suffix("image/svg+xml")  # "xml"
+mimeatlas.essence("Text/HTML; charset=UTF-8")  # "text/html"
+mimeatlas.sniff(b"%PDF-1.7 ...")  # "application/pdf"
 
 # Your own mappings, without touching global state.
-table = mimeguess.default_table().with_types({"text/x-typescript": ["ts", "d.ts"]})
+table = mimeatlas.default_table().with_types({"text/x-typescript": ["ts", "d.ts"]})
 table.guess_type("index.d.ts")  # "text/x-typescript"
 ```
 
@@ -55,12 +55,12 @@ raises `TypeError` for text.
 ## Command line
 
 ```
-mimeguess type report.pdf               # application/pdf
-mimeguess type site.tar.gz --encoding   # application/x-tar<TAB>gzip
-mimeguess ext image/jpeg                # .jpg .jpeg .jpe
-mimeguess info application/json
-mimeguess sniff download.bin
-mimeguess source
+mimeatlas type report.pdf               # application/pdf
+mimeatlas type site.tar.gz --encoding   # application/x-tar<TAB>gzip
+mimeatlas ext image/jpeg                # .jpg .jpeg .jpe
+mimeatlas info application/json
+mimeatlas sniff download.bin
+mimeatlas source
 ```
 
 ## Where the data comes from
@@ -72,8 +72,8 @@ resolved with the jshttp mime-types 3.0.2 scoring. A short, labelled,
 hand-written supplement keeps a few extensions mime-db does not list; it moves
 three answers away from mime-types (`.flac` to `audio/flac`, `.yaml` and `.yml`
 to `application/yaml`), and every other extension matches mime-types 3.0.2. Call
-`mimeguess.data_source()` for the version, URL, checksum and license. The
-[GUIDE](https://github.com/JaviLianes8/mimeguess/blob/main/GUIDE.md) has the full policy and the measured differences from the
+`mimeatlas.data_source()` for the version, URL, checksum and license. The
+[GUIDE](https://github.com/JaviLianes8/mimeatlas/blob/main/GUIDE.md) has the full policy and the measured differences from the
 standard library.
 
 ## Why
@@ -83,28 +83,28 @@ registry, so the same call can return different answers on different machines;
 even `mimetypes.init(files=[])` still reads them. Its built-in table also changes
 between Python versions. A `mimetypes.MimeTypes(filenames=())` instance uses the
 standard library's built-in table, which is a good choice when that coverage and
-Python-version-dependent behavior suit you. `mimeguess` ships a fixed table of
+Python-version-dependent behavior suit you. `mimeatlas` ships a fixed table of
 2,524 types and 1,245 extensions and supports immutable local overrides.
 Its narrow `sniff()` function recognizes signatures only; it does not validate
 file contents or implement the complete browser sniffing algorithm.
 
-See the [GUIDE](https://github.com/JaviLianes8/mimeguess/blob/main/GUIDE.md)
-for contracts and the [CHANGELOG](https://github.com/JaviLianes8/mimeguess/blob/main/CHANGELOG.md)
+See the [GUIDE](https://github.com/JaviLianes8/mimeatlas/blob/main/GUIDE.md)
+for contracts and the [CHANGELOG](https://github.com/JaviLianes8/mimeatlas/blob/main/CHANGELOG.md)
 for version changes.
 
 ## Development
 
 Install `.[dev]`, then run `python scripts/fetch_upstream.py` to obtain the pinned
-sources. Set `MIMEGUESS_DATA_DIR` to keep them outside the checkout. With Node.js
+sources. Set `MIMEATLAS_DATA_DIR` to keep them outside the checkout. With Node.js
 installed, tests also run the pinned mime-types reference from its verified archives.
 `scripts/check.ps1` checks formatting, lint, strict types and tests. Tests use a
 300-second limit per test; use `pytest --basetemp PATH` to choose their working folder.
 
 ## License
 
-MIT. See [LICENSE](https://github.com/JaviLianes8/mimeguess/blob/main/LICENSE). The embedded data is derived from mime-db and the
+MIT. See [LICENSE](https://github.com/JaviLianes8/mimeatlas/blob/main/LICENSE). The embedded data is derived from mime-db and the
 conflict scoring from mime-types, both MIT; their notices are in
-[LICENSES](https://github.com/JaviLianes8/mimeguess/tree/main/LICENSES) and ship inside the wheel.
+[LICENSES](https://github.com/JaviLianes8/mimeatlas/tree/main/LICENSES) and ship inside the wheel.
 
 ## Links
 

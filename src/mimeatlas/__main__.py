@@ -1,4 +1,4 @@
-"""Allow ``python -m mimeguess``."""
+"""Allow ``python -m mimeatlas``."""
 
 from __future__ import annotations
 

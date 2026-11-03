@@ -9,7 +9,7 @@ from typing import Literal
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 
 def _strided_two_dimensional(source: str, stride: int) -> memoryview:

@@ -18,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @pytest.fixture(scope="module")
 def installed(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
-    """Yield the path of the installed ``mimeguess`` console script."""
+    """Yield the path of the installed ``mimeatlas`` console script."""
     work = tmp_path_factory.mktemp("e2e")
-    existing = os.environ.get("MIMEGUESS_WHEEL")
+    existing = os.environ.get("MIMEATLAS_WHEEL")
     if existing:
         wheel = Path(existing)
     else:
@@ -28,7 +28,7 @@ def installed(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
         isolation = ["--no-build-isolation"] if importlib.util.find_spec("hatchling") else []
         command = [sys.executable, "-m", "pip", "wheel", "--no-deps", "-q", *isolation]
         subprocess.run([*command, "-w", str(wheels), str(ROOT)], check=True, timeout=120)
-        (wheel,) = wheels.glob("mimeguess-*.whl")
+        (wheel,) = wheels.glob("mimeatlas-*.whl")
     env_dir = work / "venv"
     venv.EnvBuilder(with_pip=True).create(env_dir)
     bin_dir = env_dir / ("Scripts" if os.name == "nt" else "bin")
@@ -38,7 +38,7 @@ def installed(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
         check=True,
         timeout=120,
     )
-    yield bin_dir / ("mimeguess.exe" if os.name == "nt" else "mimeguess")
+    yield bin_dir / ("mimeatlas.exe" if os.name == "nt" else "mimeatlas")
 
 
 def cli(script: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -53,11 +53,11 @@ def cli(script: Path, *args: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_the_installed_script_reports_the_version(installed: Path) -> None:
-    from mimeguess import __version__
+    from mimeatlas import __version__
 
     result = cli(installed, "--version")
     assert result.returncode == 0
-    assert result.stdout.strip() == f"mimeguess {__version__}"
+    assert result.stdout.strip() == f"mimeatlas {__version__}"
 
 
 def test_the_installed_script_guesses_types(installed: Path) -> None:
@@ -100,11 +100,11 @@ def test_the_installed_script_fails_cleanly(installed: Path) -> None:
 
 
 def test_the_installed_wheel_carries_the_table_and_notices(installed: Path) -> None:
-    python = installed.parent / installed.name.replace("mimeguess", "python")
+    python = installed.parent / installed.name.replace("mimeatlas", "python")
     code = (
-        "import importlib.metadata as m, mimeguess; "
-        "files = [str(f) for f in m.files('mimeguess')]; "
-        "print(mimeguess.guess_type('x.webp')); "
+        "import importlib.metadata as m, mimeatlas; "
+        "files = [str(f) for f in m.files('mimeatlas')]; "
+        "print(mimeatlas.guess_type('x.webp')); "
         "print(any(f.endswith('_data.json.gz') for f in files)); "
         "print(sum(f.endswith(('mime-db.txt', 'mime-types.txt')) for f in files))"
     )
@@ -120,12 +120,12 @@ def test_the_installed_wheel_carries_the_table_and_notices(installed: Path) -> N
 
 
 def test_installed_api_and_module_command(installed: Path) -> None:
-    python = installed.parent / installed.name.replace("mimeguess", "python")
+    python = installed.parent / installed.name.replace("mimeatlas", "python")
     code = """
-import importlib.metadata, pickle, mimeguess as m
+import importlib.metadata, pickle, mimeatlas as m
 from pathlib import Path
 assert 'site-packages' in str(Path(m.__file__).resolve())
-assert m.__version__ == importlib.metadata.version('mimeguess') == '1.0.0'
+assert m.__version__ == importlib.metadata.version('mimeatlas') == '1.0.0'
 assert len(m.__all__) == 23
 assert m.guess('a.tar.gz') == m.Guess('application/x-tar', 'gzip', 'tar')
 assert m.default_table().with_types({'text/x-demo': ['d.ts']}).guess_type('x.d.ts') == 'text/x-demo'
@@ -142,7 +142,7 @@ else:
 """
     subprocess.run([str(python), "-I", "-c", code], cwd=installed.parent, check=True, timeout=60)
     result = subprocess.run(
-        [str(python), "-I", "-m", "mimeguess", "type", "--content-type", "x.html"],
+        [str(python), "-I", "-m", "mimeatlas", "type", "--content-type", "x.html"],
         cwd=installed.parent,
         capture_output=True,
         text=True,

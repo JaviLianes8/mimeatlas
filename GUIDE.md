@@ -1,12 +1,12 @@
-# mimeguess guide
+# mimeatlas guide
 
 ## What the table is
 
 The table is generated, not written by hand. `scripts/generate_table.py` reads a
 snapshot of jshttp **mime-db 1.54.0** (`data/mime-db-1.54.0.json`, MIT), which is
 not committed: `python scripts/fetch_upstream.py` fetches it as pinned in
-`data/MANIFEST.json`. The generator writes `src/mimeguess/_data.json.gz` plus
-`src/mimeguess/_meta.py`.
+`data/MANIFEST.json`. The generator writes `src/mimeatlas/_data.json.gz` plus
+`src/mimeatlas/_meta.py`.
 mime-db merges three upstreams and records which one each type came from:
 
 | `source` | Meaning |
@@ -18,7 +18,7 @@ mime-db merges three upstreams and records which one each type came from:
 | `supplement` | One of the few hand-written additions in this package |
 | `custom` | Added by you through `MimeTable.with_types` |
 
-`mimeguess.data_source()` returns the snapshot name, version, URL, SHA-256,
+`mimeatlas.data_source()` returns the snapshot name, version, URL, SHA-256,
 retrieval date, license and the table size. Provenance details for every data
 file are in `data/README.md`.
 
@@ -59,7 +59,7 @@ The standard library module is a good default, but its answers are not fixed:
 - The built-in table changes between Python versions (`.rtf`, `.wav`, `.mkv`,
   `.avi` and others changed in 3.12 to 3.14) so its coverage also depends on Python.
 
-`mimeguess` ships one table inside the wheel and never reads the host, so the
+`mimeatlas` ships one table inside the wheel and never reads the host, so the
 same input gives the same answer on every machine and Python version. The value
 is determinism and coverage (2,500+ types, 1,200+ extensions), not a different
 opinion.
@@ -82,27 +82,27 @@ the extensions both know agree. The rest fall into three groups:
 ## Recipes
 
 ```python
-import mimeguess
+import mimeatlas
 
 # Type and content coding, the way a static file server needs them.
-mimeguess.guess("site.tar.gz")  # Guess(type='application/x-tar', encoding='gzip', extension='tar')
-mimeguess.guess("logo.svgz")  # Guess(type='image/svg+xml', encoding='gzip', extension='svg')
+mimeatlas.guess("site.tar.gz")  # Guess(type='application/x-tar', encoding='gzip', extension='tar')
+mimeatlas.guess("logo.svgz")  # Guess(type='image/svg+xml', encoding='gzip', extension='svg')
 
 # A ready header value.
-mimeguess.content_type_for("index.html")  # 'text/html; charset=utf-8'
+mimeatlas.content_type_for("index.html")  # 'text/html; charset=utf-8'
 
 # Everything about a type.
-info = mimeguess.media_type_info("application/ld+json")
+info = mimeatlas.media_type_info("application/ld+json")
 info.source, info.extensions, info.suffix  # ('iana', ('.jsonld',), 'json')
 
 # Your own mappings, without global state.
-table = mimeguess.default_table().with_types({"text/x-typescript": ["ts", "d.ts"]})
+table = mimeatlas.default_table().with_types({"text/x-typescript": ["ts", "d.ts"]})
 table.guess_type("index.d.ts")  # 'text/x-typescript'
-mimeguess.guess_type("index.ts")  # still 'video/mp2t' (MPEG transport stream)
+mimeatlas.guess_type("index.ts")  # still 'video/mp2t' (MPEG transport stream)
 
 # Check a download really is what its name says.
 with open("report.pdf", "rb") as handle:
-    assert mimeguess.sniff(handle.read(16)) == "application/pdf"
+    assert mimeatlas.sniff(handle.read(16)) == "application/pdf"
 ```
 
 ### Content coding and browsers
@@ -132,15 +132,15 @@ add them (`d.ts`, `tar.zst`, ...).
 ## Command line
 
 ```
-mimeguess type report.pdf                 # application/pdf
-mimeguess type a.png b.css                # one "path<TAB>type" line per path
-mimeguess type index.html --content-type  # text/html; charset=utf-8
-mimeguess type site.tar.gz --encoding     # application/x-tar<TAB>gzip
-mimeguess ext image/jpeg                  # .jpg .jpeg .jpe
-mimeguess ext image/jpeg --preferred      # .jpg
-mimeguess info application/json --json
-mimeguess sniff download.bin
-mimeguess source
+mimeatlas type report.pdf                 # application/pdf
+mimeatlas type a.png b.css                # one "path<TAB>type" line per path
+mimeatlas type index.html --content-type  # text/html; charset=utf-8
+mimeatlas type site.tar.gz --encoding     # application/x-tar<TAB>gzip
+mimeatlas ext image/jpeg                  # .jpg .jpeg .jpe
+mimeatlas ext image/jpeg --preferred      # .jpg
+mimeatlas info application/json --json
+mimeatlas sniff download.bin
+mimeatlas source
 ```
 
 ## Regenerating the table
@@ -196,4 +196,4 @@ metadata and preserve other types' reverse lists. Iteration order breaks conflic
 last assignment wins. Frozen result dataclasses store typed fields without validation.
 
 The 1.0.0 release keeps all previous table answers; behavior changes are in the
-[CHANGELOG](https://github.com/JaviLianes8/mimeguess/blob/main/CHANGELOG.md).
+[CHANGELOG](https://github.com/JaviLianes8/mimeatlas/blob/main/CHANGELOG.md).

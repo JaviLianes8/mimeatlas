@@ -16,8 +16,8 @@ from typing import Any
 
 import pytest
 
-import mimeguess
-from mimeguess._load import load_raw
+import mimeatlas
+from mimeatlas._load import load_raw
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -50,7 +50,7 @@ def _pure_build() -> dict[str, Any]:
 @needs_snapshot
 def test_the_embedded_table_equals_the_generator_output() -> None:
     data, meta = generate_table.generate()
-    package = importlib.resources.files("mimeguess")
+    package = importlib.resources.files("mimeatlas")
     embedded = gzip.decompress(package.joinpath("_data.json.gz").read_bytes())
     assert embedded == data
     assert package.joinpath("_meta.py").read_text(encoding="utf-8") == meta
@@ -65,15 +65,15 @@ def test_the_generator_check_mode_passes() -> None:
 @needs_snapshot
 def test_the_snapshot_checksum_matches_the_recorded_provenance() -> None:
     digest = hashlib.sha256(generate_table.snapshot_bytes()).hexdigest()
-    assert digest == mimeguess.data_source().sha256
+    assert digest == mimeatlas.data_source().sha256
 
 
 def test_the_package_loads_the_same_table_it_ships() -> None:
     raw = load_raw()
-    assert len(raw["types"]) == mimeguess.data_source().type_count
-    assert len(raw["extensions"]) == mimeguess.data_source().extension_count
-    assert len(mimeguess.known_types()) == len(raw["types"])
-    assert len(mimeguess.known_extensions()) == len(raw["extensions"])
+    assert len(raw["types"]) == mimeatlas.data_source().type_count
+    assert len(raw["extensions"]) == mimeatlas.data_source().extension_count
+    assert len(mimeatlas.known_types()) == len(raw["types"])
+    assert len(mimeatlas.known_extensions()) == len(raw["extensions"])
 
 
 @needs_snapshot

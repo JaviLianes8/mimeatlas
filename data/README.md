@@ -6,7 +6,7 @@ the files here, checking every hash; git ignores everything but this README and 
 manifest. Without the files the package still works and its tests pass: the generator
 check and the tests that read them skip.
 
-Set `MIMEGUESS_DATA_DIR` to download and test against a directory outside the checkout.
+Set `MIMEATLAS_DATA_DIR` to download and test against a directory outside the checkout.
 The manifest always stays here. The original embedded table retrieval date remains
 2026-10-12; the manifest records the latest verification fetch separately.
 
@@ -28,9 +28,9 @@ may change; a download that does not match its pinned hash is refused for review
   the IANA Media Types registry, Apache httpd `mime.types` and nginx
   `mime.types`, recording for each type which of them it came from.
 - License: MIT. The notice is in `LICENSES/mime-db.txt` and ships in the wheel,
-  because `src/mimeguess/_data.json.gz` is derived from this file.
-- Used by: `scripts/generate_table.py`, which builds `src/mimeguess/_data.json.gz`
-  and `src/mimeguess/_meta.py` from it.
+  because `src/mimeatlas/_data.json.gz` is derived from this file.
+- Used by: `scripts/generate_table.py`, which builds `src/mimeatlas/_data.json.gz`
+  and `src/mimeatlas/_meta.py` from it.
 
 ## apache-httpd-mime.types-r1930012
 

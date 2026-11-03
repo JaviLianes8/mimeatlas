@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 # Every fixed-prefix signature sniff() documents, written by hand from the format specifications.
 SIGNATURES = [

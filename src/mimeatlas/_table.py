@@ -22,7 +22,7 @@ class MimeTable(_TableInfo):
     Obtain tables from :func:`default_table` and :meth:`with_types`; the
     constructor is internal and its arguments may change.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> isinstance(m.default_table(), m.MimeTable)
     True
     """
@@ -49,7 +49,7 @@ class MimeTable(_TableInfo):
         Raises:
             ValueError: on a malformed type or extension, or an empty list.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().with_types({"text/x-demo": ["demo"]}).guess_type("a.demo")
         'text/x-demo'
         """
@@ -86,7 +86,7 @@ class MimeTable(_TableInfo):
         The whole value is one extension; it is not split. Returns ``None`` when
         the extension is unknown or malformed.
 
-        >>> from mimeguess import default_table
+        >>> from mimeatlas import default_table
         >>> default_table().type_for_extension(".PDF")
         'application/pdf'
         """
@@ -118,7 +118,7 @@ class MimeTable(_TableInfo):
         does not list are read as their long form, so ``backup.tgz`` is also
         ``application/gzip``. Use :meth:`guess` to separate the content coding.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().guess_type("report.pdf")
         'application/pdf'
         """
@@ -134,7 +134,7 @@ class MimeTable(_TableInfo):
         encoding ``gzip``, ``a.tgz`` is the same, and a lone ``a.gz`` has encoding
         ``gzip`` and no type.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().guess("site.tar.gz")
         Guess(type='application/x-tar', encoding='gzip', extension='tar')
         """
@@ -148,7 +148,7 @@ class MimeTable(_TableInfo):
         ``index.html`` gives ``"text/html; charset=utf-8"`` and ``photo.png``
         gives ``"image/png"``. Returns ``None`` when the type is unknown.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().content_type_for("index.html")
         'text/html; charset=utf-8'
         """

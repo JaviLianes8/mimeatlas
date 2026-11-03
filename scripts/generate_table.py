@@ -11,8 +11,8 @@ Inputs:
     scripts/_score.py             conflict scoring ported from mime-types 3.0.2
 
 Outputs (committed, do not edit by hand):
-    src/mimeguess/_data.json.gz   the table the package loads at run time
-    src/mimeguess/_meta.py        provenance constants
+    src/mimeatlas/_data.json.gz   the table the package loads at run time
+    src/mimeatlas/_meta.py        provenance constants
 """
 
 from __future__ import annotations
@@ -31,9 +31,9 @@ from _score import preferred
 from _supplement import EXTRA_EXTENSIONS, PREFERRED_EXTENSION
 
 ROOT = Path(__file__).resolve().parents[1]
-SNAPSHOT = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data"))) / "mime-db-1.54.0.json"
-OUT_DATA = ROOT / "src" / "mimeguess" / "_data.json.gz"
-OUT_META = ROOT / "src" / "mimeguess" / "_meta.py"
+SNAPSHOT = Path(os.environ.get("MIMEATLAS_DATA_DIR", str(ROOT / "data"))) / "mime-db-1.54.0.json"
+OUT_DATA = ROOT / "src" / "mimeatlas" / "_data.json.gz"
+OUT_META = ROOT / "src" / "mimeatlas" / "_meta.py"
 
 SOURCE_NAME = "mime-db"
 SOURCE_VERSION = "1.54.0"

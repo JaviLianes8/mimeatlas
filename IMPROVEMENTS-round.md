@@ -7,7 +7,7 @@ Progress for 1.0.0:
 - [ ] Independent review, five QA lenses, merge and publication
 
 The detailed evidence and current status are in
-[CERT-1.0-REPORT.md](https://github.com/JaviLianes8/mimeguess/blob/release/1.0.0/CERT-1.0-REPORT.md).
+[CERT-1.0-REPORT.md](https://github.com/JaviLianes8/mimeatlas/blob/release/1.0.0/CERT-1.0-REPORT.md).
 
 Ranked by value to users. Everything here is additive: the 0.1.0 functions keep
 their signatures and their documented behaviour.
@@ -47,7 +47,7 @@ their signatures and their documented behaviour.
 11. **Narrow magic number sniffing.** `sniff(data)` recognises a short, fixed list
     of unambiguous signatures (PNG, JPEG, GIF, PDF, ZIP, gzip, ...) and returns
     `None` for anything else. It is not a general content detector.
-12. **Command line tool.** `mimeguess type|ext|info|sniff|source` for shell use.
+12. **Command line tool.** `mimeatlas type|ext|info|sniff|source` for shell use.
 13. **Verification.** Contract tests over the whole public promise, a test that
     the embedded table equals the generator output, cross-checks against the
     standard library and Apache `mime.types`, and an end to end test that installs

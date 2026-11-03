@@ -7,11 +7,11 @@ $version = (python -c "import tomllib; print(tomllib.load(open('pyproject.toml',
 if ($LASTEXITCODE) { throw "Could not read the version from pyproject.toml." }
 $taken = $true
 try {
-    Invoke-WebRequest -UseBasicParsing "https://pypi.org/pypi/mimeguess/$version/json" | Out-Null
+    Invoke-WebRequest -UseBasicParsing "https://pypi.org/pypi/mimeatlas/$version/json" | Out-Null
 } catch {
     if ($_.Exception.Response.StatusCode.value__ -eq 404) { $taken = $false } else { throw }
 }
-if ($taken) { throw "mimeguess $version already exists on PyPI. Bump the version before publishing." }
+if ($taken) { throw "mimeatlas $version already exists on PyPI. Bump the version before publishing." }
 
 $token = $env:PYPI_TOKEN
 if (-not $token -and (Test-Path "C:\secrets\pypi-token.txt")) {

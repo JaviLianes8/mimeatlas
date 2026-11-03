@@ -1,4 +1,4 @@
-"""Inspect the actual built distributions when MIMEGUESS_DIST_DIR is supplied."""
+"""Inspect the actual built distributions when MIMEATLAS_DIST_DIR is supplied."""
 
 from __future__ import annotations
 
@@ -12,19 +12,19 @@ import pytest
 
 
 def test_built_distributions_contain_only_intended_files() -> None:
-    folder = os.environ.get("MIMEGUESS_DIST_DIR")
+    folder = os.environ.get("MIMEATLAS_DIST_DIR")
     if folder is None:
-        pytest.skip("set MIMEGUESS_DIST_DIR to inspect built artifacts")
-    wheel = Path(folder) / "mimeguess-1.0.0-py3-none-any.whl"
-    sdist = Path(folder) / "mimeguess-1.0.0.tar.gz"
+        pytest.skip("set MIMEATLAS_DIST_DIR to inspect built artifacts")
+    wheel = Path(folder) / "mimeatlas-1.0.0-py3-none-any.whl"
+    sdist = Path(folder) / "mimeatlas-1.0.0.tar.gz"
     with zipfile.ZipFile(wheel) as archive:
         names = archive.namelist()
-        assert all(n.startswith(("mimeguess/", "mimeguess-1.0.0.dist-info/")) for n in names)
-        assert "mimeguess/py.typed" in names
-        assert "mimeguess/_data.json.gz" in names
+        assert all(n.startswith(("mimeatlas/", "mimeatlas-1.0.0.dist-info/")) for n in names)
+        assert "mimeatlas/py.typed" in names
+        assert "mimeatlas/_data.json.gz" in names
         for notice in ("LICENSE", "LICENSES/mime-db.txt", "LICENSES/mime-types.txt"):
-            assert f"mimeguess-1.0.0.dist-info/licenses/{notice}" in names
-        metadata = email.message_from_bytes(archive.read("mimeguess-1.0.0.dist-info/METADATA"))
+            assert f"mimeatlas-1.0.0.dist-info/licenses/{notice}" in names
+        metadata = email.message_from_bytes(archive.read("mimeatlas-1.0.0.dist-info/METADATA"))
         assert metadata["Version"] == "1.0.0"
         assert metadata["Requires-Python"] == ">=3.10"
         assert metadata["License-Expression"] == "MIT"
@@ -32,10 +32,10 @@ def test_built_distributions_contain_only_intended_files() -> None:
         assert all("extra == 'dev'" in value for value in metadata.get_all("Requires-Dist", []))
     with tarfile.open(sdist) as archive:
         names += archive.getnames()
-        base = "mimeguess-1.0.0/"
+        base = "mimeatlas-1.0.0/"
         for name in ("README.md", "GUIDE.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"):
             assert base + name in archive.getnames()
-        assert base + "src/mimeguess/py.typed" in archive.getnames()
+        assert base + "src/mimeatlas/py.typed" in archive.getnames()
         assert base + "data/MANIFEST.json" in archive.getnames()
         for notice in ("mime-db.txt", "mime-types.txt"):
             assert base + "LICENSES/" + notice in archive.getnames()

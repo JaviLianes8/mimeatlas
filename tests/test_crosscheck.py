@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-import mimeguess
+import mimeatlas
 
 ROOT = Path(__file__).resolve().parents[1]
 STDLIB = mimetypes.MimeTypes(filenames=(), strict=True)
@@ -51,17 +51,17 @@ DIFFER = {
 def test_everyday_extensions_agree_with_the_standard_library(ext: str) -> None:
     if ext not in STRICT:
         pytest.skip(f"{ext} is not in this Python's built-in table")
-    assert mimeguess.type_for_extension(ext) == STRICT[ext]
+    assert mimeatlas.type_for_extension(ext) == STRICT[ext]
 
 
 @pytest.mark.parametrize(("ext", "ours"), sorted(DIFFER.items()))
 def test_documented_differences_are_ours_by_design(ext: str, ours: str) -> None:
-    assert mimeguess.type_for_extension(ext) == ours
+    assert mimeatlas.type_for_extension(ext) == ours
 
 
 def test_most_shared_extensions_agree_with_the_standard_library() -> None:
-    shared = [ext for ext in STRICT if mimeguess.type_for_extension(ext) is not None]
-    agree = [ext for ext in shared if mimeguess.type_for_extension(ext) == STRICT[ext]]
+    shared = [ext for ext in STRICT if mimeatlas.type_for_extension(ext) is not None]
+    agree = [ext for ext in shared if mimeatlas.type_for_extension(ext) == STRICT[ext]]
     # Measured 0.76 to 0.81 on Python 3.10 to 3.14.
     assert len(shared) >= 120
     assert len(agree) / len(shared) >= 0.75
@@ -72,13 +72,13 @@ def test_most_shared_extensions_agree_with_the_standard_library() -> None:
 )
 def test_content_coding_matches_the_standard_library(name: str) -> None:
     std_type, std_encoding = STDLIB.guess_type(name, strict=True)
-    ours = mimeguess.guess(name)
+    ours = mimeatlas.guess(name)
     assert ours.encoding == std_encoding
     assert ours.type == std_type
 
 
 APACHE = (
-    Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data")))
+    Path(os.environ.get("MIMEATLAS_DATA_DIR", str(ROOT / "data")))
     / "apache-httpd-mime.types-r1930012"
 )
 needs_apache = pytest.mark.skipif(
@@ -106,7 +106,7 @@ def test_the_apache_file_matches_the_manifest() -> None:
 def test_every_apache_extension_is_known() -> None:
     apache = _apache()
     assert len(apache) > 900
-    assert [ext for ext in apache if mimeguess.type_for_extension(ext) is None] == []
+    assert [ext for ext in apache if mimeatlas.type_for_extension(ext) is None] == []
 
 
 @needs_apache
@@ -117,7 +117,7 @@ def test_apache_disagreements_are_only_resolved_conflicts() -> None:
     differ = {
         ext
         for ext, types in apache.items()
-        if len(types) == 1 and mimeguess.type_for_extension(ext) != types[0]
+        if len(types) == 1 and mimeatlas.type_for_extension(ext) != types[0]
     }
     assert differ <= explained
     assert len(differ) == 22

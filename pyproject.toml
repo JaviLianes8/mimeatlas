@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mimeguess"
+name = "mimeatlas"
 version = "1.0.0"
 description = "Deterministic, OS-independent file extension and MIME type mapping generated from mime-db, zero dependencies"
 readme = "README.md"
@@ -30,21 +30,21 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-mimeguess = "mimeguess._cli:main"
+mimeatlas = "mimeatlas._cli:main"
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "pytest", "pytest-timeout", "build", "twine", "tomli; python_version < '3.11'"]
 
 [project.urls]
 Homepage = "https://lianes8studio.com"
-Source = "https://github.com/JaviLianes8/mimeguess"
-Issues = "https://github.com/JaviLianes8/mimeguess/issues"
-Changelog = "https://github.com/JaviLianes8/mimeguess/blob/main/CHANGELOG.md"
+Source = "https://github.com/JaviLianes8/mimeatlas"
+Issues = "https://github.com/JaviLianes8/mimeatlas/issues"
+Changelog = "https://github.com/JaviLianes8/mimeatlas/blob/main/CHANGELOG.md"
 LinkedIn = "https://www.linkedin.com/in/jlianes/"
 Funding = "https://buymeacoffee.com/jlianesglrs"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/mimeguess"]
+packages = ["src/mimeatlas"]
 
 [tool.hatch.build.targets.sdist]
 # Upstream data files are fetched locally and never shipped; only their manifest is.

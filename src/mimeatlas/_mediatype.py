@@ -53,7 +53,7 @@ def structured_suffix(mime: str) -> str | None:
     ``application/ld+json`` gives ``"json"`` and ``image/svg+xml`` gives
     ``"xml"``. Returns ``None`` when there is no suffix or the value is malformed.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.structured_suffix("image/svg+xml")
     'xml'
     """

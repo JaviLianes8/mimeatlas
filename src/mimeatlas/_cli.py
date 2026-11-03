@@ -1,4 +1,4 @@
-"""The ``mimeguess`` command line tool."""
+"""The ``mimeatlas`` command line tool."""
 
 from __future__ import annotations
 
@@ -23,15 +23,15 @@ from ._sniff import SNIFF_BYTES, sniff
 
 EXAMPLES = """\
 examples:
-  mimeguess type report.pdf                 application/pdf
-  mimeguess type index.html --content-type  text/html; charset=utf-8
-  mimeguess type site.tar.gz --encoding     application/x-tar<TAB>gzip
-  mimeguess type a.png b.css                one "path<TAB>type" line per path
-  mimeguess ext image/jpeg                  .jpg .jpeg .jpe
-  mimeguess ext image/jpeg --preferred      .jpg
-  mimeguess info application/json --json    everything known about a type
-  mimeguess sniff download.bin              type from the first bytes
-  mimeguess source                          where the table comes from
+  mimeatlas type report.pdf                 application/pdf
+  mimeatlas type index.html --content-type  text/html; charset=utf-8
+  mimeatlas type site.tar.gz --encoding     application/x-tar<TAB>gzip
+  mimeatlas type a.png b.css                one "path<TAB>type" line per path
+  mimeatlas ext image/jpeg                  .jpg .jpeg .jpe
+  mimeatlas ext image/jpeg --preferred      .jpg
+  mimeatlas info application/json --json    everything known about a type
+  mimeatlas sniff download.bin              type from the first bytes
+  mimeatlas source                          where the table comes from
 
 With several inputs each line is prefixed by the input and a tab. Unknown
 inputs are reported on stderr and make the exit status 1. Results never depend
@@ -48,12 +48,12 @@ class _Parser(argparse.ArgumentParser):
 
 def _parser() -> argparse.ArgumentParser:
     parser = _Parser(
-        prog="mimeguess",
+        prog="mimeatlas",
         description="Map file extensions to MIME types and back, from a fixed table.",
         epilog=EXAMPLES,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--version", action="version", version=f"mimeguess {__version__}")
+    parser.add_argument("--version", action="version", version=f"mimeatlas {__version__}")
     sub = parser.add_subparsers(dest="command", required=True, parser_class=_Parser)
     p = sub.add_parser("type", help="guess the MIME type of paths from their extensions")
     p.add_argument("paths", nargs="+", metavar="PATH")
@@ -83,11 +83,11 @@ def _report(inputs: Sequence[str], lookup: Callable[[str], str | None], what: st
         try:
             value = lookup(item)
         except (OSError, ValueError):
-            print(f"mimeguess: cannot read input {index}", file=sys.stderr)
+            print(f"mimeatlas: cannot read input {index}", file=sys.stderr)
             status = 1
             continue
         if value is None:
-            print(f"mimeguess: {what} for input {index}", file=sys.stderr)
+            print(f"mimeatlas: {what} for input {index}", file=sys.stderr)
             status = 1
         elif len(inputs) == 1:
             print(value)
@@ -129,7 +129,7 @@ def _sniff_file(name: str) -> str | None:
 def _info(mime: str, as_json: bool) -> int:
     found = media_type_info(mime)
     if found is None:
-        print("mimeguess: unknown MIME type for input 1", file=sys.stderr)
+        print("mimeatlas: unknown MIME type for input 1", file=sys.stderr)
         return 1
     data = dataclasses.asdict(found)
     data["extensions"] = list(found.extensions)

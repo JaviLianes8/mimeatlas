@@ -1,8 +1,8 @@
-# mimeguess 1.0.0 certification report
+# mimeatlas 1.0.0 certification report
 
 Progress:
 - [x] Release branch from main `6be2c4896439472c44c481868f80d0d8cd03313b`
-- [x] PyPI checked: HTTP 404 for https://pypi.org/pypi/mimeguess/json on 2026-11-02
+- [x] PyPI checked: HTTP 404 for https://pypi.org/pypi/mimeatlas/json and its `mime-atlas`, `mime_atlas`, `mime.atlas` variants on 2026-11-03
 - [x] API, errors, runnable examples, strict typing and contract review
 - [x] Real sources fetched and independent reference implementation executed
 - [x] Seeded fuzz and adversarial inputs
@@ -11,7 +11,7 @@ Progress:
 - [x] Mutation round and final four gates
 - [ ] Independent reviewer (item 16)
 - [ ] Five QA lenses (item 19)
-- [x] [PR #4](https://github.com/JaviLianes8/mimeguess/pull/4) open; guard CLEAN
+- [x] [PR #4](https://github.com/JaviLianes8/mimeatlas/pull/4) open; guard CLEAN
 - [ ] Merge and publication reserved for the maintainer
 
 ## Baseline
@@ -37,7 +37,7 @@ one-byte elements and one dimension. The CHANGELOG lists each behavior change.
 
 On 2026-11-02 the six URLs in `data/MANIFEST.json` were fetched, with byte sizes,
 SHA-256 digests, revisions and licenses recorded. Copies remain outside the repository
-under `MIMEGUESS_DATA_DIR`; `scripts/fetch_upstream.py` can reproduce the downloads.
+under `MIMEATLAS_DATA_DIR`; `scripts/fetch_upstream.py` can reproduce the downloads.
 
 - mime-db 1.54.0: generator output equals the shipped table; every source type,
   extension and metadata field is checked.
@@ -66,7 +66,7 @@ Every test has a 300-second timeout.
 ## Packaging and supported interpreters
 
 The final wheel was built from the sdist, then installed with `--no-index --no-deps`
-into a throwaway venv. Both `mimeguess` and `python -I -m mimeguess` were driven by
+into a throwaway venv. Both `mimeatlas` and `python -I -m mimeatlas` were driven by
 subprocess, including standard input, JSON metadata, success and failure paths.
 An external consumer imported the public API, checked values and serialization,
 and passed `mypy --strict` using the installed wheel's `py.typed` information.
@@ -94,8 +94,8 @@ fetched source documents, package archives, environments, caches or certificatio
 
 | Artifact | Bytes | SHA-256 |
 | --- | --- | --- |
-| `mimeguess-1.0.0-py3-none-any.whl` | 54833 | `7a32a7b46e5a8cb214308176e0b9131f3481efff89f37ca29bbf50e0821fc297` |
-| `mimeguess-1.0.0.tar.gz` | 79953 | `88a2008bb28e4526721980c390fd3ff00b82fb1ed9280822a27f62efa85ad687` |
+| `mimeatlas-1.0.0-py3-none-any.whl` | 54833 | `7a32a7b46e5a8cb214308176e0b9131f3481efff89f37ca29bbf50e0821fc297` |
+| `mimeatlas-1.0.0.tar.gz` | 79953 | `88a2008bb28e4526721980c390fd3ff00b82fb1ed9280822a27f62efa85ad687` |
 
 ## Resource bounds
 
@@ -370,7 +370,7 @@ covers a bare `BZh` and RIFF headers of 11 bytes for each form type, for bytes, 
 and positive and negative strided memoryviews. All cases pass against the existing
 implementation; production code, runtime behavior and the public API are unchanged.
 
-The other length and offset checks in `src/mimeguess/_sniff.py` were probed the same way
+The other length and offset checks in `src/mimeatlas/_sniff.py` were probed the same way
 (mutation applied to the source, fresh process, bytecode writing disabled, source restored):
 
 | Mutation | Catching test | Result |

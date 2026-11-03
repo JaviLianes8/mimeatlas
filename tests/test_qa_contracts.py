@@ -14,7 +14,7 @@ from types import FrameType
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 _Trace = Callable[[FrameType, str, object], "_Trace | None"]
 
@@ -28,9 +28,9 @@ def test_backslash_separators_preserve_hidden_filename_rules(path: str) -> None:
 
 def _cli(*args: str) -> subprocess.CompletedProcess[str]:
     src = str(Path(__file__).resolve().parents[1] / "src")
-    env = {**os.environ, "PYTHONPATH": "" if os.environ.get("MIMEGUESS_INSTALLED") else src}
+    env = {**os.environ, "PYTHONPATH": "" if os.environ.get("MIMEATLAS_INSTALLED") else src}
     return subprocess.run(
-        [sys.executable, "-m", "mimeguess", *args],
+        [sys.executable, "-m", "mimeatlas", *args],
         capture_output=True,
         text=True,
         env=env,
@@ -42,7 +42,7 @@ def _cli(*args: str) -> subprocess.CompletedProcess[str]:
 def test_unknown_info_identifies_its_input_without_echoing_it() -> None:
     result = _cli("info", "application/x-certification-unknown")
     assert result.returncode == 1 and result.stdout == ""
-    assert result.stderr == "mimeguess: unknown MIME type for input 1\n"
+    assert result.stderr == "mimeatlas: unknown MIME type for input 1\n"
 
 
 def test_all_provenance_fields_reach_the_api_and_cli() -> None:

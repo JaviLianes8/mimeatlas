@@ -6,7 +6,7 @@ from array import array
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 
 @pytest.mark.parametrize("typecode", ["b", "B"])

@@ -5,7 +5,7 @@ from __future__ import annotations
 import dataclasses
 import inspect
 
-import mimeguess as m
+import mimeatlas as m
 
 
 def test_lookup_parameter_names_and_defaults() -> None:

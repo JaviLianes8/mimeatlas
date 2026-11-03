@@ -9,7 +9,7 @@ import sqlite3
 import wave
 from pathlib import Path
 
-import mimeguess as m
+import mimeatlas as m
 
 
 def test_real_bzip2_and_xz_streams() -> None:

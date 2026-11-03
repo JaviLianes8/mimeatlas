@@ -15,10 +15,10 @@ from pathlib import Path
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 ROOT = Path(__file__).resolve().parents[1]
-FOLDER = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data")))
+FOLDER = Path(os.environ.get("MIMEATLAS_DATA_DIR", str(ROOT / "data")))
 
 
 def fetched(name: str) -> bytes:

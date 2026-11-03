@@ -17,7 +17,7 @@ import urllib.request
 from pathlib import Path
 
 MANIFEST = Path(__file__).resolve().parents[1] / "data" / "MANIFEST.json"
-FOLDER = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(MANIFEST.parent)))
+FOLDER = Path(os.environ.get("MIMEATLAS_DATA_DIR", str(MANIFEST.parent)))
 
 
 def main() -> int:

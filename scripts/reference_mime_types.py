@@ -12,7 +12,7 @@ import tarfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FOLDER = Path(os.environ.get("MIMEGUESS_DATA_DIR", str(ROOT / "data")))
+FOLDER = Path(os.environ.get("MIMEATLAS_DATA_DIR", str(ROOT / "data")))
 PROGRAM = """
 const m = require('mime-types');
 const db = require('mime-db');

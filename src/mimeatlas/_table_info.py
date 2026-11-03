@@ -29,7 +29,7 @@ class _TableInfo:
         Parameters and case are ignored. Returns an empty tuple when the type is
         unknown, malformed, or has no extensions.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().extensions_for("image/jpeg")
         ('.jpg', '.jpeg', '.jpe')
         """
@@ -39,7 +39,7 @@ class _TableInfo:
     def guess_extension(self, mime: str) -> str | None:
         """Return the preferred extension of a type with a leading dot, or ``None``.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().guess_extension("image/jpeg")
         '.jpg'
         """
@@ -49,7 +49,7 @@ class _TableInfo:
     def media_type_info(self, mime: str) -> MediaTypeInfo | None:
         """Return everything known about a type, or ``None`` when it is unknown.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().media_type_info("image/png").type
         'image/png'
         """
@@ -75,7 +75,7 @@ class _TableInfo:
         source annotations ``7-BIT`` and ``XML-BASED`` are not charsets and are
         never returned.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().default_charset("text/plain")
         'utf-8'
         """
@@ -92,7 +92,7 @@ class _TableInfo:
         """Return whether a type carries text: ``text/*``, a type with a declared
         charset, or a ``+json``, ``+xml``, ``+yaml`` or ``+json-seq`` suffix.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().is_textual("application/ld+json")
         True
         """
@@ -105,7 +105,7 @@ class _TableInfo:
     def is_compressible(self, mime: str) -> bool | None:
         """Return whether a type usually compresses well, ``None`` when unknown.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> m.default_table().is_compressible("image/png")
         False
         """
@@ -115,7 +115,7 @@ class _TableInfo:
     def known_types(self) -> tuple[str, ...]:
         """Return every MIME type in the table, sorted.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> "application/pdf" in m.default_table().known_types()
         True
         """
@@ -124,7 +124,7 @@ class _TableInfo:
     def known_extensions(self) -> tuple[str, ...]:
         """Return every extension the table resolves, with a leading dot, sorted.
 
-        >>> import mimeguess as m
+        >>> import mimeatlas as m
         >>> ".pdf" in m.default_table().known_extensions()
         True
         """

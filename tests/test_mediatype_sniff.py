@@ -8,19 +8,19 @@ import zipfile
 
 import pytest
 
-import mimeguess
-from mimeguess import InvalidMediaType
+import mimeatlas
+from mimeatlas import InvalidMediaType
 
 
 def test_essence_lowercases_and_strips_parameters() -> None:
-    assert mimeguess.essence("  Text/HTML ; charset=UTF-8") == "text/html"
-    assert mimeguess.essence("application/vnd.api+json") == "application/vnd.api+json"
+    assert mimeatlas.essence("  Text/HTML ; charset=UTF-8") == "text/html"
+    assert mimeatlas.essence("application/vnd.api+json") == "application/vnd.api+json"
 
 
 @pytest.mark.parametrize("value", ["", "text", "text/", "/html", "te xt/html", "a/b/c", "a/b c"])
 def test_essence_rejects_malformed_values(value: str) -> None:
     with pytest.raises(InvalidMediaType):
-        mimeguess.essence(value)
+        mimeatlas.essence(value)
 
 
 def test_invalid_media_type_is_a_value_error() -> None:
@@ -28,21 +28,21 @@ def test_invalid_media_type_is_a_value_error() -> None:
 
 
 def test_structured_suffix() -> None:
-    assert mimeguess.structured_suffix("application/ld+json") == "json"
-    assert mimeguess.structured_suffix("IMAGE/SVG+XML; x=1") == "xml"
-    assert mimeguess.structured_suffix("application/json") is None
-    assert mimeguess.structured_suffix("application/+json") is None
-    assert mimeguess.structured_suffix("nonsense") is None
+    assert mimeatlas.structured_suffix("application/ld+json") == "json"
+    assert mimeatlas.structured_suffix("IMAGE/SVG+XML; x=1") == "xml"
+    assert mimeatlas.structured_suffix("application/json") is None
+    assert mimeatlas.structured_suffix("application/+json") is None
+    assert mimeatlas.structured_suffix("nonsense") is None
 
 
 def test_is_textual() -> None:
-    assert mimeguess.is_textual("text/plain")
-    assert mimeguess.is_textual("application/json")  # declared charset
-    assert mimeguess.is_textual("application/vnd.example+json")  # suffix
-    assert mimeguess.is_textual("application/atom+xml")
-    assert not mimeguess.is_textual("image/png")
-    assert not mimeguess.is_textual("application/zip")
-    assert not mimeguess.is_textual("garbage")
+    assert mimeatlas.is_textual("text/plain")
+    assert mimeatlas.is_textual("application/json")  # declared charset
+    assert mimeatlas.is_textual("application/vnd.example+json")  # suffix
+    assert mimeatlas.is_textual("application/atom+xml")
+    assert not mimeatlas.is_textual("image/png")
+    assert not mimeatlas.is_textual("application/zip")
+    assert not mimeatlas.is_textual("garbage")
 
 
 def _zip_bytes() -> bytes:
@@ -80,28 +80,28 @@ SAMPLES = {
 
 @pytest.mark.parametrize(("data", "expected"), sorted(SAMPLES.items()))
 def test_sniff_recognises_each_documented_signature(data: bytes, expected: str) -> None:
-    assert mimeguess.sniff(data) == expected
+    assert mimeatlas.sniff(data) == expected
 
 
 def test_sniff_works_on_real_generated_files() -> None:
-    assert mimeguess.sniff(gzip.compress(b"hello")) == "application/gzip"
-    assert mimeguess.sniff(_zip_bytes()) == "application/zip"
-    assert mimeguess.sniff(bytearray(_zip_bytes())) == "application/zip"
-    assert mimeguess.sniff(memoryview(_zip_bytes())) == "application/zip"
+    assert mimeatlas.sniff(gzip.compress(b"hello")) == "application/gzip"
+    assert mimeatlas.sniff(_zip_bytes()) == "application/zip"
+    assert mimeatlas.sniff(bytearray(_zip_bytes())) == "application/zip"
+    assert mimeatlas.sniff(memoryview(_zip_bytes())) == "application/zip"
 
 
 @pytest.mark.parametrize(
     "data", [b"", b"hello world", b"BZh0", b"BZ", b"RIFF\x00\x00\x00\x00XXXX", b"RIFF", b"PK"]
 )
 def test_sniff_returns_none_for_anything_else(data: bytes) -> None:
-    assert mimeguess.sniff(data) is None
+    assert mimeatlas.sniff(data) is None
 
 
 def test_sniff_rejects_text() -> None:
     with pytest.raises(TypeError):
-        mimeguess.sniff("%PDF-1.7")  # type: ignore[arg-type]
+        mimeatlas.sniff("%PDF-1.7")  # type: ignore[arg-type]
 
 
 def test_every_sniffed_type_is_in_the_table() -> None:
     for mime in set(SAMPLES.values()) | {"application/zip", "application/gzip"}:
-        assert mimeguess.media_type_info(mime) is not None, mime
+        assert mimeatlas.media_type_info(mime) is not None, mime

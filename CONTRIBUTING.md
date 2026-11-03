@@ -15,8 +15,8 @@ The generator check and the tests that need the files skip until they are there.
 
 ## Before you open a pull request
 
-- Keep public API in `src/mimeguess/__init__.py`; internals live in `_`-prefixed modules.
-- Never edit `src/mimeguess/_data.json.gz` or `_meta.py` by hand. Change the
+- Keep public API in `src/mimeatlas/__init__.py`; internals live in `_`-prefixed modules.
+- Never edit `src/mimeatlas/_data.json.gz` or `_meta.py` by hand. Change the
   snapshot (see `data/README.md`) or `scripts/_supplement.py`, then run
   `python scripts/generate_table.py`.
 - Add a test for the behaviour you change. Unit tests need no network; the end to

@@ -14,7 +14,7 @@ def guess_type(path: str) -> str | None:
     touches the host registry, so the result is the same on every operating
     system. See :func:`guess` to split off the content coding.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.guess_type("report.pdf")
     'application/pdf'
     """
@@ -27,7 +27,7 @@ def guess_extension(mime: str) -> str | None:
     Any parameters such as ``"; charset=utf-8"`` are ignored. Returns None when
     the type is not in the table or has no extension.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.guess_extension("image/jpeg")
     '.jpg'
     """
@@ -40,7 +40,7 @@ def guess(path: str) -> Guess:
     ``guess("site.tar.gz")`` is ``Guess("application/x-tar", "gzip", "tar")``.
     See :meth:`MimeTable.guess`.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.guess("site.tar.gz")
     Guess(type='application/x-tar', encoding='gzip', extension='tar')
     """
@@ -65,7 +65,7 @@ def extensions_for(mime: str) -> tuple[str, ...]:
     ``extensions_for("image/jpeg")`` is ``(".jpg", ".jpeg", ".jpe")``. Unknown
     types give an empty tuple.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.extensions_for("image/jpeg")
     ('.jpg', '.jpeg', '.jpe')
     """
@@ -75,7 +75,7 @@ def extensions_for(mime: str) -> tuple[str, ...]:
 def media_type_info(mime: str) -> MediaTypeInfo | None:
     """Return a :class:`MediaTypeInfo` for a type, or ``None`` when unknown.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.media_type_info("image/png").type
     'image/png'
     """
@@ -87,7 +87,7 @@ def default_charset(mime: str) -> str | None:
 
     See :meth:`MimeTable.default_charset` for the exact policy.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.default_charset("text/plain")
     'utf-8'
     """
@@ -97,7 +97,7 @@ def default_charset(mime: str) -> str | None:
 def is_textual(mime: str) -> bool:
     """Return whether a type carries text. See :meth:`MimeTable.is_textual`.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.is_textual("application/ld+json")
     True
     """
@@ -107,7 +107,7 @@ def is_textual(mime: str) -> bool:
 def is_compressible(mime: str) -> bool | None:
     """Return whether a type usually compresses well, or None when unknown.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.is_compressible("image/png")
     False
     """
@@ -117,7 +117,7 @@ def is_compressible(mime: str) -> bool | None:
 def content_type_for(path: str) -> str | None:
     """Return a Content-Type value for a path, such as ``"text/html; charset=utf-8"``.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.content_type_for("index.html")
     'text/html; charset=utf-8'
     """
@@ -127,7 +127,7 @@ def content_type_for(path: str) -> str | None:
 def known_types() -> tuple[str, ...]:
     """Return every MIME type in the default table, sorted.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> "application/pdf" in m.known_types()
     True
     """
@@ -137,7 +137,7 @@ def known_types() -> tuple[str, ...]:
 def known_extensions() -> tuple[str, ...]:
     """Return every extension the default table resolves, with a leading dot, sorted.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> ".pdf" in m.known_extensions()
     True
     """

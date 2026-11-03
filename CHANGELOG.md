@@ -17,6 +17,8 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- The distribution, import package and command are now `mimeatlas` (formerly `mimeguess`,
+  a name the package index refused); the developer variable is `MIMEATLAS_DATA_DIR`.
 - Validation errors no longer include caller values or type names. CLI errors identify
   inputs by their one-based position instead of echoing paths, media types or arguments;
   usage errors provide a generic reason and still exit 1.
@@ -33,7 +35,7 @@ All notable changes to this project are documented here. The format follows
   quadratic allocation for very long custom extensions. Override merging uses set
   membership so repeated large extension lists also remain linear.
 - Runnable API docstrings, external-source checks, seeded properties, packaging and
-  error contracts added. Source downloads can be redirected with `MIMEGUESS_DATA_DIR`.
+  error contracts added. Source downloads can be redirected with `MIMEATLAS_DATA_DIR`.
 
 ### Fixed
 
@@ -98,7 +100,7 @@ All notable changes to this project are documented here. The format follows
   table, including compound extensions such as `d.ts`, without global state.
 - `sniff(data)` recognises 21 common formats by their leading bytes.
 - `data_source()` reports the snapshot provenance as a `SourceInfo`.
-- The `mimeguess` command line tool (`type`, `ext`, `info`, `sniff`, `source`).
+- The `mimeatlas` command line tool (`type`, `ext`, `info`, `sniff`, `source`).
 - GUIDE with the data policy and the differences from `mimetypes`.
 
 ### Changed

@@ -8,7 +8,7 @@ from typing import SupportsIndex, overload
 
 import pytest
 
-import mimeguess as m
+import mimeatlas as m
 
 
 @pytest.mark.parametrize("layout", ["slice", "outer", "inner"])

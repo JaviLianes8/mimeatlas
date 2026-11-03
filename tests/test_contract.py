@@ -1,4 +1,4 @@
-"""The complete public promise of mimeguess, one assertion group per promise."""
+"""The complete public promise of mimeatlas, one assertion group per promise."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-import mimeguess
+import mimeatlas
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -53,35 +53,35 @@ PUBLIC_API: list[str] = [
 
 
 def test_all_lists_exactly_the_public_api() -> None:
-    assert sorted(mimeguess.__all__) == sorted(PUBLIC_API)
-    assert {name for name in vars(mimeguess) if not name.startswith("_")} == set(PUBLIC_API)
+    assert sorted(mimeatlas.__all__) == sorted(PUBLIC_API)
+    assert {name for name in vars(mimeatlas) if not name.startswith("_")} == set(PUBLIC_API)
 
 
 def test_every_exported_name_resolves_and_is_documented() -> None:
-    for name in mimeguess.__all__:
-        obj = getattr(mimeguess, name)
+    for name in mimeatlas.__all__:
+        obj = getattr(mimeatlas, name)
         if name != "Source":
             assert obj.__doc__ and obj.__doc__.strip(), name
 
 
 def test_version_is_a_three_part_string_matching_the_project() -> None:
-    parts = mimeguess.__version__.split(".")
+    parts = mimeatlas.__version__.split(".")
     assert len(parts) == 3 and all(part.isdigit() for part in parts)
     project = _project()
-    assert project["version"] == mimeguess.__version__
-    assert project["scripts"]["mimeguess"] == "mimeguess._cli:main"
+    assert project["version"] == mimeatlas.__version__
+    assert project["scripts"]["mimeatlas"] == "mimeatlas._cli:main"
 
 
 def test_the_package_ships_type_information_and_its_table() -> None:
-    files = importlib.resources.files("mimeguess")
+    files = importlib.resources.files("mimeatlas")
     assert files.joinpath("py.typed").is_file()
     assert files.joinpath("_data.json.gz").is_file()
-    if os.environ.get("MIMEGUESS_INSTALLED"):
+    if os.environ.get("MIMEATLAS_INSTALLED"):
         assert "site-packages" in str(files)
 
 
 def test_results_are_frozen_dataclasses() -> None:
-    for cls in (mimeguess.Guess, mimeguess.MediaTypeInfo, mimeguess.SourceInfo):
+    for cls in (mimeatlas.Guess, mimeatlas.MediaTypeInfo, mimeatlas.SourceInfo):
         assert dataclasses.is_dataclass(cls)
         params = getattr(cls, "__dataclass_params__")  # noqa: B009
         assert params.frozen
@@ -89,49 +89,49 @@ def test_results_are_frozen_dataclasses() -> None:
 
 def test_lookups_never_raise_on_bad_input_and_return_none_or_empty() -> None:
     for bad in ("", "nonsense", "a/b/c", ";", " "):
-        assert mimeguess.guess_type(bad) is None
-        assert mimeguess.guess_extension(bad) is None
-        assert mimeguess.type_for_extension(bad) is None
-        assert mimeguess.extensions_for(bad) == ()
-        assert mimeguess.media_type_info(bad) is None
-        assert mimeguess.default_charset(bad) is None
-        assert mimeguess.is_compressible(bad) is None
-        assert mimeguess.is_textual(bad) is False
-        assert mimeguess.structured_suffix(bad) is None
-        assert mimeguess.content_type_for(bad) is None
-        assert mimeguess.guess(bad) == mimeguess.Guess(None, None, None)
+        assert mimeatlas.guess_type(bad) is None
+        assert mimeatlas.guess_extension(bad) is None
+        assert mimeatlas.type_for_extension(bad) is None
+        assert mimeatlas.extensions_for(bad) == ()
+        assert mimeatlas.media_type_info(bad) is None
+        assert mimeatlas.default_charset(bad) is None
+        assert mimeatlas.is_compressible(bad) is None
+        assert mimeatlas.is_textual(bad) is False
+        assert mimeatlas.structured_suffix(bad) is None
+        assert mimeatlas.content_type_for(bad) is None
+        assert mimeatlas.guess(bad) == mimeatlas.Guess(None, None, None)
 
 
 def test_only_essence_raises_and_only_invalid_media_type() -> None:
-    with pytest.raises(mimeguess.InvalidMediaType):
-        mimeguess.essence("nonsense")
-    assert mimeguess.essence("A/B") == "a/b"
+    with pytest.raises(mimeatlas.InvalidMediaType):
+        mimeatlas.essence("nonsense")
+    assert mimeatlas.essence("A/B") == "a/b"
 
 
 def test_lookups_are_case_insensitive_everywhere() -> None:
-    assert mimeguess.guess_type("A.PDF") == mimeguess.guess_type("a.pdf")
-    assert mimeguess.guess("A.TAR.GZ") == mimeguess.guess("a.tar.gz")
-    assert mimeguess.extensions_for("IMAGE/PNG") == mimeguess.extensions_for("image/png")
-    assert mimeguess.media_type_info("Text/Html") == mimeguess.media_type_info("text/html")
+    assert mimeatlas.guess_type("A.PDF") == mimeatlas.guess_type("a.pdf")
+    assert mimeatlas.guess("A.TAR.GZ") == mimeatlas.guess("a.tar.gz")
+    assert mimeatlas.extensions_for("IMAGE/PNG") == mimeatlas.extensions_for("image/png")
+    assert mimeatlas.media_type_info("Text/Html") == mimeatlas.media_type_info("text/html")
 
 
 def test_round_trip_for_every_type_with_extensions() -> None:
-    for mime in mimeguess.known_types():
-        exts = mimeguess.extensions_for(mime)
-        assert mimeguess.guess_extension(mime) == (exts[0] if exts else None)
-        info = mimeguess.media_type_info(mime)
+    for mime in mimeatlas.known_types():
+        exts = mimeatlas.extensions_for(mime)
+        assert mimeatlas.guess_extension(mime) == (exts[0] if exts else None)
+        info = mimeatlas.media_type_info(mime)
         assert info is not None and info.type == mime and info.extensions == exts
 
 
 def test_every_type_has_a_known_source() -> None:
     allowed = {"iana", "apache", "nginx", "mime-db", "supplement"}
-    for mime in mimeguess.known_types():
-        info = mimeguess.media_type_info(mime)
+    for mime in mimeatlas.known_types():
+        info = mimeatlas.media_type_info(mime)
         assert info is not None and info.source in allowed
 
 
 def test_data_source_describes_the_snapshot() -> None:
-    info = mimeguess.data_source()
+    info = mimeatlas.data_source()
     assert (info.name, info.version, info.license) == ("mime-db", "1.54.0", "MIT")
     assert info.url.startswith("https://") and len(info.sha256) == 64
     assert info.type_count > 2500 and info.extension_count > 1200
@@ -140,10 +140,10 @@ def test_data_source_describes_the_snapshot() -> None:
 def test_results_do_not_depend_on_the_host_registry() -> None:
     import mimetypes
 
-    before = [mimeguess.guess_type(name) for name in ("a.pdf", "a.xml", "a.ts")]
+    before = [mimeatlas.guess_type(name) for name in ("a.pdf", "a.xml", "a.ts")]
     mimetypes.add_type("application/x-host-override", ".pdf")
     try:
-        after = [mimeguess.guess_type(name) for name in ("a.pdf", "a.xml", "a.ts")]
+        after = [mimeatlas.guess_type(name) for name in ("a.pdf", "a.xml", "a.ts")]
     finally:
         mimetypes.init()
     assert before == after == ["application/pdf", "application/xml", "video/mp2t"]

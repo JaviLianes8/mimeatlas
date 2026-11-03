@@ -9,22 +9,22 @@ from pathlib import Path
 
 import pytest
 
-import mimeguess
+import mimeatlas
 
 
 def test_all_public_docstrings_have_passing_examples() -> None:
     runner = doctest.DocTestRunner()
     parser = doctest.DocTestParser()
-    objects: list[object] = [mimeguess]
-    objects.extend(getattr(mimeguess, n) for n in mimeguess.__all__ if n != "Source")
+    objects: list[object] = [mimeatlas]
+    objects.extend(getattr(mimeatlas, n) for n in mimeatlas.__all__ if n != "Source")
     objects.extend(
-        getattr(mimeguess.MimeTable, n) for n in dir(mimeguess.MimeTable) if not n.startswith("_")
+        getattr(mimeatlas.MimeTable, n) for n in dir(mimeatlas.MimeTable) if not n.startswith("_")
     )
-    objects.append(mimeguess.MediaTypeInfo.preferred_extension)
+    objects.append(mimeatlas.MediaTypeInfo.preferred_extension)
     for obj in objects:
         doc = inspect.getdoc(obj)
         assert doc and ">>>" in doc, obj
-        test = parser.get_doctest(doc, vars(mimeguess).copy(), str(obj), "public", 0)
+        test = parser.get_doctest(doc, vars(mimeatlas).copy(), str(obj), "public", 0)
         runner.run(test)
     assert runner.summarize().failed == 0
     assert runner.tries >= 72

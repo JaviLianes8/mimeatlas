@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-import mimeguess
-from mimeguess._cli import main
+import mimeatlas
+from mimeatlas._cli import main
 
 
 def run(capsys: pytest.CaptureFixture[str], *args: str) -> tuple[int, str, str]:
@@ -82,7 +82,7 @@ def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as exc:
         main(["--version"])
     assert exc.value.code == 0
-    assert capsys.readouterr().out.strip() == f"mimeguess {mimeguess.__version__}"
+    assert capsys.readouterr().out.strip() == f"mimeatlas {mimeatlas.__version__}"
 
 
 @pytest.mark.parametrize("args", [[], ["bogus"], ["type"], ["type", "--nope", "a"]])
@@ -97,9 +97,9 @@ def test_usage_errors_exit_one_on_stderr(
 
 def test_unprintable_names_do_not_crash_a_narrow_console() -> None:
     src = str(Path(__file__).resolve().parents[1] / "src")
-    search_path = "" if os.environ.get("MIMEGUESS_INSTALLED") else src
+    search_path = "" if os.environ.get("MIMEATLAS_INSTALLED") else src
     env = {**os.environ, "PYTHONIOENCODING": "ascii", "PYTHONPATH": search_path}
-    command = [sys.executable, "-m", "mimeguess", "type", "a.png", "\u0436.png"]
+    command = [sys.executable, "-m", "mimeatlas", "type", "a.png", "\u0436.png"]
     result = subprocess.run(command, capture_output=True, env=env, check=False, timeout=60)
     assert result.returncode == 0, result.stderr
     assert result.stdout.splitlines()[1] == rb"\u0436.png" + b"\timage/png"
@@ -109,4 +109,4 @@ def test_help_shows_runnable_examples(capsys: pytest.CaptureFixture[str]) -> Non
     with pytest.raises(SystemExit):
         main(["--help"])
     out = capsys.readouterr().out
-    assert "examples:" in out and "mimeguess type report.pdf" in out
+    assert "examples:" in out and "mimeatlas type report.pdf" in out

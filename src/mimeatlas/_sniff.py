@@ -63,7 +63,7 @@ def sniff(data: bytes | bytearray | memoryview) -> str | None:
         TypeError: if ``data`` is not bytes-like or has an unsupported view layout.
         ValueError: if a memoryview has already been released.
 
-    >>> import mimeguess as m
+    >>> import mimeatlas as m
     >>> m.sniff(b"%PDF-1.7")
     'application/pdf'
     """
