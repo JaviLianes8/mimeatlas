@@ -227,7 +227,7 @@ No findings disputed. Independent lens re-verification remains pending.
 ## QA round 3: 2026-11-03
 
 Base: `93d019657d8638ca131526d26935852807f9d9ba`.
-Fix commit: `strengthen sniff subclass and strided-buffer contracts`.
+Fix commit: `b0001191ebd6a2fb2e25503d0859baa17dc17ef5`.
 
 | Finding | Resolution |
 | --- | --- |
