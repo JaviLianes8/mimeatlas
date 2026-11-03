@@ -61,6 +61,9 @@ All notable changes to this project are documented here. The format follows
 - Sniff contracts require magic signatures at offset zero for bytes, bytearray and
   positive and negative strided memoryviews, rejecting signatures after unrelated bytes.
   Runtime behavior and the public API are unchanged.
+- Sniff contracts reject a bzip2 marker or a RIFF marker that appears after unrelated
+  bytes, even when a valid version digit or form type sits where the format expects it.
+  Runtime behavior and the public API are unchanged.
 
 ## [0.2.1]
 

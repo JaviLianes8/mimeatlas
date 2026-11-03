@@ -145,3 +145,26 @@ def test_sniff_requires_magic_signatures_at_offset_zero(
         data[:] = shifted
         assert not data.c_contiguous and bytes(data) == shifted
     assert m.sniff(data) is None
+
+
+@pytest.mark.parametrize("buffer_kind", ["bytes", "bytearray", "stride-2", "stride-minus-2"])
+@pytest.mark.parametrize(
+    "data",
+    [b"abc1BZh", b"xxxxRIFFWEBP", b"xxxxRIFFWAVE", b"xxxxRIFFAVI "],
+    ids=["bzip2-at-3", "riff-webp-at-4", "riff-wave-at-4", "riff-avi-at-4"],
+)
+def test_sniff_requires_bzip2_and_riff_markers_at_offset_zero(
+    data: bytes, buffer_kind: str
+) -> None:
+    # A misplaced marker must not borrow a version digit or form type from other bytes.
+    buffer: bytes | bytearray | memoryview
+    if buffer_kind == "bytes":
+        buffer = data
+    elif buffer_kind == "bytearray":
+        buffer = bytearray(data)
+    else:
+        stride = 2 if buffer_kind == "stride-2" else -2
+        buffer = memoryview(bytearray(2 * len(data)))[::stride]
+        buffer[:] = data
+        assert not buffer.c_contiguous and bytes(buffer) == data
+    assert m.sniff(buffer) is None
