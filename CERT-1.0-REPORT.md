@@ -354,3 +354,42 @@ No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff 
 `mypy --strict src` and pytest (521 passed, 5 skipped for absent optional inputs,
 300-second per-test timeout, fresh CPython 3.14 venv). `mypy --strict src tests scripts`
 also passes. Independent lens re-verification remains pending.
+
+## QA round 7: 2026-11-03
+
+Base: `08881f435c204ccd18a113fb5a4f5fb17f703b0e`.
+Fix commit: `e350dafe27e81e056c03ce4cc8f5a3b82c8c2f4a`.
+
+| Finding | Resolution |
+| --- | --- |
+| E-15 | `sniff(b"BZh")` must return `None`. For a 3-byte head the digit slice `head[3:4]` is empty and an empty slice is contained in every bytes object, so the `len(head) >= 4` guard is the only check that rejects a bare marker. |
+
+This is a missing-coverage finding. The new
+`tests/test_sniff_contracts.py::test_sniff_rejects_markers_one_byte_short_of_their_length_guard`
+covers a bare `BZh` and RIFF headers of 11 bytes for each form type, for bytes, bytearray
+and positive and negative strided memoryviews. All cases pass against the existing
+implementation; production code, runtime behavior and the public API are unchanged.
+
+The other length and offset checks in `src/mimeguess/_sniff.py` were probed the same way
+(mutation applied to the source, fresh process, bytecode writing disabled, source restored):
+
+| Mutation | Catching test | Result |
+| --- | --- | --- |
+| bzip2 guard `>= 4` to `>= 3` | `test_sniff_rejects_markers_one_byte_short_of_their_length_guard` | killed |
+| bzip2 guard removed | `test_sniff_rejects_markers_one_byte_short_of_their_length_guard` | killed |
+| RIFF guard `>= 12` to `>= 11`, or removed | none | equivalent: a slice shorter than 4 bytes never matches a 4-byte form key |
+| empty check `nbytes == 0` removed | `test_empty_multidimensional_views_return_none` | killed |
+| empty check `nbytes == 0` to `<= 2` | none | equivalent: the shortest signature is 3 bytes |
+| empty check `nbytes == 0` to `<= 3` | `test_sniff_requires_magic_signatures_at_offset_zero` | killed |
+| `SNIFF_BYTES` 16 to 15 | `test_sniff_recognises_each_documented_signature`, new prefix pin | killed |
+| `SNIFF_BYTES` 16 to 17 | `test_sniff_reads_exactly_the_documented_sixteen_byte_prefix` (new) | killed |
+| prefix slice removed (contiguous or strided path) | `tests/test_resource_bounds.py` | killed |
+
+`SNIFF_BYTES` 16 to 17 survived before this round. The CLI reads `SNIFF_BYTES` bytes from
+files and stdin and the `sniff()` docstring promises the first 16 bytes, so the new test in
+`tests/test_resource_bounds.py` pins both. The two equivalent mutants cannot change any
+result and are recorded here instead of being tested.
+
+No findings are disputed. All four gates exit 0: `ruff format --check .`, `ruff check .`,
+`mypy --strict src` and pytest (300-second per-test timeout, fresh CPython 3.14 venv).
+Independent lens re-verification remains pending.
